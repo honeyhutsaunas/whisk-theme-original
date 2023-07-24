@@ -1,0 +1,207 @@
+{% comment %}
+  Renders gift card recipient form.
+  Accepts:
+  - product: {Object} product object.
+  - form: {Object} the product form object.
+  - section_id: {Object} Section Id to which this snippet belongs.
+
+  Usage:
+  {% render 'gift-card-recipient-form', product: product, form: form, section_id: section.id %}
+{% endcomment %}
+<script src="{{ 'recipient-form.js' | asset_url }}" defer="defer"></script>
+
+<div class="space--pv--small no-js-hidden">
+  {%- assign gift_card_recipient_control_flag = 'properties[__shopify_send_gift_card_to_recipient]' -%}
+  <recipient-form
+    id="RecipientForm-{{ section_id }}"
+    class="recipient-form"
+    data-section-id="{{ section_id }}"
+    data-product-variant-id="{{ product.selected_or_first_available_variant.id }}"
+  >
+    <label class="form-checkbox space--mb--medium" for="Recipient-checkbox-{{ section_id }}">
+      <input
+        id="Recipient-checkbox-{{ section_id }}"
+        type="checkbox"
+        name="{{ gift_card_recipient_control_flag }}"
+        disabled
+      >
+      <div class="form-checkbox__box"></div>
+        {%- render 'icons', icon: 'checkmark', class: 'form-checkbox__checkmark' -%}
+      <span>
+        {{ 'gift_cards.recipient.checkbox' | t }}
+      </span>
+    </label>
+
+    <div class="recipient-form__inputs">
+      <div
+        class="space--mb--medium form-message js-form-message"
+        id="Recipient-error-{{ section_id }}"
+        role="alert"
+        {% unless form.errors %}
+          hidden
+        {% endunless %}
+      >
+        <h2 class="form-message__focusable-title space--mb--small" tabindex="-1" autofocus>
+          {%- render 'icons', icon: 'error', class: 'space--mr--xsmall form-message__icon' -%}
+          <span id="Recipient-error-message-{{ section_id }}">
+            {{ 'contact.error_heading' | t }}
+          </span>
+        </h2>
+
+        <ul id="Recipient-error-list-{{ section_id }}">
+          {%- if form.errors -%}
+            {%- for field in form.errors -%}
+              <li>
+                {%- if field == 'form' -%}
+                  {{ form.errors.messages[field] }}
+                {%- else -%}
+                  <a href="#Recipient-{{ field }}-{{ section_id }}">
+                    {{ form.errors.messages[field] }}
+                  </a>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          {%- endif -%}
+        </ul>
+      </div>
+
+      <div class="recipient-fields js-recipient-fields">
+        <div>
+          <label class="space--mb--xsmall" for="Recipient-email-{{ section_id }}">
+            {{ 'gift_cards.recipient.email_label' | t }} <span aria-hidden="true">*</span>
+          </label>
+          <input
+            id="Recipient-email-{{ section_id }}"
+            type="email"
+            placeholder="{{ 'gift_cards.recipient.email' | t }}"
+            name="properties[Recipient email]"
+            value="{{ form.email }}"
+            required
+            {% if form.errors contains 'email' %}
+              aria-invalid="true"
+              aria-describedby="RecipientForm-email-error-{{ section_id }}"
+            {% endif %}
+          >
+          <div
+            id="RecipientForm-email-error-{{ section_id }}"
+            class="form-message js-form-message space--mt--xsmall{% unless form.errors contains 'email' %} display--hidden{% endunless %}"
+          >
+            <span class="error-message js-error-message">
+              {%- if form.errors contains 'email' -%}
+                {{ form.errors.messages.email }}.
+              {%- endif -%}
+            </span>
+          </div>
+        </div>
+
+        <div class="space--mt--small">
+          <label class="space--mb--xsmall" for="Recipient-name-{{ section_id }}">
+            {{- 'gift_cards.recipient.name_label' | t -}}
+          </label>
+          <input
+            autocomplete="name"
+            type="text"
+            id="Recipient-name-{{ section_id }}"
+            name="properties[Recipient name]"
+            placeholder="{{ 'gift_cards.recipient.name' | t }}"
+            value="{{ form.name }}"
+            {% if form.errors contains 'name' %}
+              aria-invalid="true"
+              aria-describedby="RecipientForm-name-error-{{ section_id }}"
+            {% endif %}
+          >
+          <div
+            id="RecipientForm-name-error-{{ section_id }}"
+            class="form-message js-form-message space--mt--xsmall{% unless form.errors contains 'name' %} display--hidden{% endunless %}"
+          >
+            <span class="error-message js-error-message">
+              {%- if form.errors contains 'name' -%}
+                {{ form.errors.messages.name }}.
+              {%- endif -%}
+            </span>
+          </div>
+        </div>
+
+        <div class="space--mt--small">
+          {%- assign max_chars_message = 200 -%}
+          {%- assign max_chars_message_rendered = 'gift_cards.recipient.max_characters' | t: max_chars: max_chars_message -%}
+          {%- assign message_label_rendered = 'gift_cards.recipient.message_label' | t -%}
+          <label class="space--mb--xsmall" for="Recipient-message-{{ section_id }}">
+            {{ message_label_rendered }}
+          </label>
+          <textarea
+            rows="10"
+            id="Recipient-message-{{ section_id }}"
+            name="properties[Message]"
+            maxlength="{{ max_chars_message }}"
+            placeholder="{{ 'gift_cards.recipient.message' | t }}"
+            aria-label="{{ message_label_rendered }} {{ max_chars_message_rendered }}"
+            {% if form.errors contains 'message' %}
+              aria-invalid="true"
+              aria-describedby="RecipientForm-message-error-{{ section_id }}"
+            {% endif %}
+          >
+            {{ form.message }}
+          </textarea>
+          <span class="copy--xsmall">
+            {{ max_chars_message_rendered }}
+          </span>
+          <div
+            id="RecipientForm-message-error-{{ section_id }}"
+            class="form-message js-form-message space--mt--xsmall{% unless form.errors contains 'message' %} display--hidden{% endunless %}"
+          >
+            <span class="error-message js-error-message">
+              {%- if form.errors contains 'message' -%}
+                {{ form.errors.messages.message }}.
+              {%- endif -%}
+            </span>
+          </div>
+        </div>
+
+        <div class="space--mt--medium grid--2-columns">
+          <div>
+            <label class="space--mb--xsmall" for="Recipient-send-on-{{ section_id }}">
+              {{ 'gift_cards.recipient.send_on_label' | t }}
+            </label>
+            <input
+              autocomplete="send_on"
+              type="date"
+              id="Recipient-send-on-{{ section_id }}"
+              name="properties[Send on]"
+              placeholder="{{ 'gift_cards.recipient.send_on' | t }}"
+              pattern="\d{4}-\d{2}-\d{2}"
+              value="{{ form.send_on }}"
+              {% if form.errors contains 'send_on' %}
+                aria-invalid="true"
+                aria-describedby="RecipientForm-send_on-error-{{ section_id }}"
+              {% endif %}
+            >
+          </div>
+        </div>
+        <div
+          id="RecipientForm-send_on-error-{{ section_id }}"
+          class="form-message js-form-message space--mt--xsmall{% unless form.errors contains 'send_on' %} display--hidden{% endunless %}"
+        >
+          <span class="error-message js-error-message">
+            {%- if form.errors contains 'send_on' -%}
+              {{ form.errors.messages.send_on }}.
+            {%- endif -%}
+          </span>
+        </div>
+      </div>
+      <input
+        type="hidden"
+        name="{{ gift_card_recipient_control_flag }}"
+        value="if_present"
+        id="Recipient-control-{{ section_id }}"
+      >
+      <input
+        type="hidden"
+        name="properties[__shopify_offset]"
+        value=""
+        id="Recipient-timezone-offset-{{ section_id }}"
+        disabled
+      >
+    </div>
+  </recipient-form>
+</div>

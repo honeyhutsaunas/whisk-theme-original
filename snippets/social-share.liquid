@@ -1,0 +1,123 @@
+{% comment %}
+    Renders a list of social share links
+
+    Accepts:
+    - class: {String} Custom CSS class for the component
+    - show_facebook_share: {Boolean} Show Facebook share link
+    - show_linkedin_share: {Boolean} Show LinkedIn share link
+    - show_pinterest_share: {Boolean} Show Pinterest share link
+    - show_twitter_share: {Boolean} Show Twitter share link
+
+    Usage:
+    {%- render 'social-share', section_id: section.id,show_facebook_share: block.settings.show_facebook_share,show_linkedin_share: block.settings.show_linkedin_share,show_pinterest_share: block.settings.show_pinterest_share,show_twitter_share: block.settings.show_twitter_share -%}
+{% endcomment %}
+
+{%- liquid
+  assign current_url = shop.secure_url
+  assign share_title = ""
+  assign social_icon_size = '24px'
+
+  case template
+    when 'page'
+      assign current_url = current_url | append: page.url
+      assign share_title = page.title
+    when 'blog'
+      assign current_url = current_url | append: blog.url
+      assign share_title = blog.title
+    when 'article'
+      assign current_url = current_url | append: article.url
+      assign share_title = article.title
+    when 'collection'
+      assign current_url = current_url | append: collection.url
+      assign share_title = collection.title
+    when 'product'
+      if product.selected_variant
+        assign current_url = current_url | append: product.url | append: '?variant=' | append: product.selected_variant.id
+      else
+        assign current_url = current_url | append: product.url
+      endif
+      assign share_title = product.title
+  endcase
+-%}
+
+<script src="{{ 'social-share.js' | asset_url }}" defer="defer"></script>
+
+<social-share data-share-url="{{ current_url }}" class="flex flex--align-center {{ class }}">
+  <span class="space--mr--xsmall">
+    {{ 'share.share' | t }}:
+  </span>
+  <ul class="flex flex--align-center list--unstyled">
+    {%- if show_facebook_share -%}
+      <li>
+        <a
+          href="http://www.facebook.com/sharer.php?u={{ current_url }}"
+          target="_blank"
+          rel="noopener"
+          data-share-link
+          class="button--icon"
+          aria-label="{{ 'share.share_on_facebook' | t }}">
+          {%- render 'icons', icon: 'facebook', size: social_icon_size -%}
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if show_twitter_share -%}
+      <li>
+        <a
+          href="https://twitter.com/share?url={{ current_url }}&amp;text={{ share_title }}"
+          target="_blank"
+          rel="noopener"
+          data-share-link
+          class="button--icon"
+          aria-label="{{ 'share.share_on_twitter' | t }}">
+          {%- render 'icons', icon: 'twitter', size: social_icon_size -%}
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if show_linkedin_share -%}
+      <li>
+        <a
+          href="https://www.linkedin.com/sharing/share-offsite/?url={{ current_url }}"
+          target="_blank"
+          rel="noopener"
+          data-share-link
+          class="button--icon"
+          aria-label="{{ 'share.share_on_linkedin' | t }}">
+          {%- render 'icons', icon: 'linkedin', size: social_icon_size -%}
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if show_pinterest_share -%}
+      <li class="no-js-hidden">
+        <a
+          href="https://www.pinterest.com/pin/create/button/" data-pin-do="buttonBookmark"
+          data-pin-custom="true"
+          target="_blank"
+          rel="noopener"
+          class="button--icon">
+          {%- render 'icons', icon: 'pinterest', size: social_icon_size -%}
+        </a>
+      </li>
+    {%- endif -%}
+    <li>
+      <a
+        href="mailto:?subject={{ share_title }} from {{ shop.name }}&amp;body=Check out this {{ template.name }}. {{ current_url }}."
+        target="_blank"
+        rel="noopener"
+        data-share-link
+        class="button--icon"
+        aria-label="{{ 'share.share_on_email' | t }}">
+        {%- render 'icons', icon: 'mail', size: social_icon_size -%}
+      </a>
+    </li>
+    <li class="no-js-hidden">
+      <button class="button--icon" data-share-clipboard aria-label="{{ 'share.copy_to_clipboard' | t }}">
+        {%- render 'icons', icon: 'link', size: social_icon_size -%}
+      </button>
+      <div data-success-message class="display--hidden social-share__success-message" role="status" aria-hidden="true">
+        <span class="copy--italic copy--small">
+          {{ 'share.success_message' | t }}
+        </span>
+      </div>
+    </li>
+  </ul>
+</social-share>

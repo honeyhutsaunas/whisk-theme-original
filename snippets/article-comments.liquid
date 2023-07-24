@@ -1,0 +1,158 @@
+{% comment %}
+    Renders article comments
+
+    Accepts:
+    - article: {Object) Article Liquid object (required)
+
+    Usage:
+    {%- render 'article-comments', article: article -%}
+{% endcomment %}
+
+<div id="comments" class="article__comments article__narrow-container space--viewport-sides space--mv--xlarge">
+  {%- assign anchorId = '#Comments-' | append: article.id -%}
+  <h2 id="Comments-{{ article.id }}" class="type--heading title--small space--mb--medium">
+    {{ 'blogs.article.comments' | t: count: article.comments_count }}
+  </h2>
+
+  {%- if article.comments_count > 0 -%}
+    {% paginate article.comments by 5 %}
+      <div class="article__comments-container">
+        {%- if comment.status == 'pending' and comment.content -%}
+          <article id="{{ comment.id }}" class="article__comments-comment">
+            <p class="space--mb--small copy--italic">
+              {{ 'blogs.article.pending_notice' | t }}
+            </p>
+            {{ comment.content }}
+            <footer class="space--mt--small copy--italic copy--small">
+              <span class="copy--bold">
+                &mdash; {{ comment.author }}
+              </span>
+            </footer>
+          </article>
+        {%- endif -%}
+
+        {%- for comment in article.comments -%}
+          <article id="{{ comment.id }}" class="article__comments-comment">
+            {{ comment.content }}
+            <footer class="space--mt--small type--accent">
+              {{ comment.author }} &mdash; {{ comment.created_at | time_tag: format: settings.date_format }}
+            </footer>
+          </article>
+        {%- endfor -%}
+        {% render 'pagination', paginate: paginate, anchor: anchorId %}
+      </div>
+    {% endpaginate %}
+  {%- endif -%}
+
+  {% form 'new_comment', article %}
+    {%- liquid
+      assign post_message = 'blogs.article.success'
+      if blog.moderated? and comment.status == 'unapproved'
+        assign post_message = 'blogs.article.success_moderated'
+      endif
+    -%}
+    <h3 class="type--heading title--xsmall space--mt--medium space--mb--medium element--border-top--thick space--pt--large">
+      {{ 'blogs.article.comment_form_title' | t }}
+    </h3>
+    {%- if form.errors -%}
+      <div class="space--mb--medium" role="alert">
+        <h4 tabindex="-1" autofocus class="form-message__focusable-title error">
+          {%- render 'icons', icon: 'error', class: 'space--mr--xsmall form-message__icon' -%}
+          {{ 'contact.error_heading' | t }}
+        </h4>
+        <ul>
+          {%- for field in form.errors -%}
+            <li>
+              <a href="#CommentForm-{{ field }}">
+                {%- if form.errors.translated_fields[field] contains 'author' -%}
+                  {{ 'blogs.article.name' | t }}
+                {%- elsif form.errors.translated_fields[field] contains 'body'-%}
+                  {{ 'blogs.article.message' | t }}
+                {%- else -%}
+                  {{ form.errors.translated_fields[field] }}
+                {%- endif -%}
+                {{ form.errors.messages[field] }}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- elsif form.posted_successfully? -%}
+      <div class="space--mb--medium form-message" role="status">
+        <h4 tabindex="-1" autofocus class="form-message__focusable-title success">
+          {%- render 'icons', icon: 'success', class: 'form-message__icon space--mr--xsmall' -%}
+          {{ post_message | t }}
+        </h4>
+      </div>
+    {%- endif -%}
+
+    <div class="grid--2-columns space--gap--small grid--reset--small-down">
+      <div>
+        <label class="space--mb--xsmall space--mt--medium" for="CommentForm-author">
+          {{ 'blogs.article.name' | t }} <span aria-hidden="true">*</span>
+        </label>
+        <input
+          type="text"
+          name="comment[author]"
+          id="CommentForm-author"
+          class="field__input"
+          autocomplete="name"
+          value="{{ form.author }}"
+          aria-required="true"
+          {% if form.errors contains 'author' %}
+            aria-invalid="true"
+            aria-describedby="CommentForm-author-error"
+          {% endif %}
+          placeholder="{{ 'blogs.article.name' | t }}"
+          required
+        >
+      </div>
+      <div>
+        <label class="space--mb--xsmall space--mt--medium" for="CommentForm-email">
+          {{ 'blogs.article.email' | t }} <span aria-hidden="true">*</span>
+        </label>
+        <input
+          type="email"
+          name="comment[email]"
+          id="CommentForm-email"
+          autocomplete="email"
+          class="field__input"
+          value="{{ form.email }}"
+          autocorrect="off"
+          autocapitalize="off"
+          aria-required="true"
+          {% if form.errors contains 'email' %}
+            aria-invalid="true"
+            aria-describedby="CommentForm-email-error"
+          {% endif %}
+          placeholder="{{ 'blogs.article.email' | t }}"
+          required
+        >
+      </div>
+    </div>
+    <label class="space--mb--xsmall space--mt--medium" for="CommentForm-body">{{ 'blogs.article.message' | t }} <span aria-hidden="true">*</span></label>
+    <textarea
+      rows="5"
+      name="comment[body]"
+      id="CommentForm-body"
+      aria-required="true"
+      {% if form.errors contains 'body' %}
+        aria-invalid="true"
+        aria-describedby="CommentForm-body-error"
+      {% endif %}
+      placeholder="{{ 'blogs.article.message' | t }}"
+      required
+    >
+      {{- form.body -}}
+    </textarea>
+
+    {%- if blog.moderated? -%}
+      <p class="space--mv--small copy--italic">
+        {{ 'blogs.article.moderated' | t }}
+      </p>
+    {%- endif -%}
+    <button type="submit" class="align--block-center space--mt--large">
+      {{ 'blogs.article.post' | t }}
+    </button>
+  {% endform %}
+</div>

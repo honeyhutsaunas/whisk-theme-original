@@ -1,0 +1,169 @@
+/* align */
+.align--text-center {
+  text-align: center;
+}
+
+.align--text-center .dropdown-link__toggle {
+  justify-content: center;
+}
+
+.align--text-right {
+  text-align: right;
+}
+
+.align--text-right .dropdown-link__toggle {
+  justify-content: flex-end;
+}
+
+.align--text-left {
+  text-align: left;
+}
+
+.align--self-start {
+  align-self: start;
+}
+
+.align--self-center {
+  align-self: center;
+}
+
+.align--self-right {
+  justify-self: end;
+}
+
+.align--block-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align--block-right {
+  margin-left: auto;
+}
+
+@media screen and (max-width: 767px) {
+  .align--block-center--small-down {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media screen and (max-width: 989px) {
+  .align--text-center--large-down {
+    text-align: center;
+  }
+
+  .align--text-center--large-down .dropdown-link__toggle {
+    justify-content: center;
+  }
+
+  .align--block-center--large-down {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* display */
+.display--block {
+  display: block;
+}
+
+.display--block--override {
+  display: block !important;
+}
+
+.display--inline-block {
+  display: inline-block;
+}
+
+.display--inline {
+  display: inline;
+}
+
+.display--hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute !important;
+  width: 1px;
+  word-wrap: normal !important;
+}
+
+.display--hidden-inline {
+  margin: 0;
+  height: 1em;
+}
+
+.display--none {
+  display: none !important;
+}
+
+.display--none--gently {
+  display: none;
+}
+
+@media screen and (min-width: 401px) {
+  .display--none--xxsmall-up {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .display--none--xxsmall-down {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 550px) {
+  .display--none--xsmall-up {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 549px) {
+  .display--none--xsmall-down {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .display--none--small-up {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .display--none--small-down {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .display--none--medium-up {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 899px) {
+  .display--none--medium-down {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .display--none--large-up {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 989px) {
+  .display--none--large-down {
+    display: none !important;
+  }
+}
+
+.visibility--hidden {
+  visibility: hidden;
+}

@@ -1,0 +1,38 @@
+.product__xr-button {
+  --button-background-color: var(--color-background);
+  --button-background-color-raw: var(--color-background-raw);
+  --button-foreground-color: var(--color-foreground);
+  --button-foreground-color-raw: var(--color-foreground-raw);
+  bottom: 0;
+  left: var(--space-xsmall);
+  position: absolute;
+  right: var(--space-xsmall);
+}
+
+.product__xr-button[data-shopify-xr-hidden] {
+  visibility: hidden;
+}
+
+.shopify-design-mode .product__xr-button[data-shopify-xr-hidden] {
+  display: none;
+}
+
+@media screen and (max-width: 749px) {
+  slider-component .product__xr-button {
+    display: none;
+  }
+
+  .product__xr-button:not([data-shopify-xr-hidden]) {
+    display: flex;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  slider-component .product__xr-button {
+    display: none;
+  }
+
+  .product__xr-button[data-shopify-xr-hidden] {
+    display: none;
+  }
+}

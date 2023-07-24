@@ -1,0 +1,27 @@
+{% comment %}
+    Renders a product card placeholder
+
+    Usage:
+    {% render 'product-card-placeholder' %}
+{% endcomment %}
+
+{%- liquid
+  assign min = 1
+  assign max = 6
+  assign diff = max | minus: min
+  assign random_number = "now" | date: "%N" | modulo: diff | plus: min
+  assign placeholder_svg = "product-" | append: random_number
+-%}
+
+<div class="product-card">
+  <div class="image-container image-container--product fade-in-image">
+    {{ placeholder_svg | placeholder_svg_tag: 'placeholder-svg object-fit__image--cover' }}
+  </div>
+  <div class="product-card__info space--mt--small">
+    <h3 class="product-card__title line-height--heading space--mb--xsmall">
+      {{ 'onboarding.product_title' | t }}
+    </h3>
+    {% render 'price' %}
+    </h2>
+  </div>
+</div>

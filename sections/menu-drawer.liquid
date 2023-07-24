@@ -1,0 +1,79 @@
+<dialog id="menu-drawer" data-drawer-dialog class="drawer drawer--menu color--bg-{{ section.settings.mobile_menu_drawer_style }} motion-reduce no-js-hidden" aria-labelledby="MenuDrawerTitle" tabindex="-1" hidden>
+  <header class="drawer__header">
+    <span></span>
+    <button class="button--icon space--mt--medium drawer__close-button--right" data-drawer-to-close="menu-drawer" aria-label="{{ 'accessibility.close' | t }}">
+      {%- render 'icons', icon: 'close', size: '30' -%}
+    </button>
+  </header>
+  <div class="drawer__scrollable">
+    {%- render 'mobile-nav', aria_title: 'MenuDrawerTitle', mobile_menu: section.settings.mobile_menu, mobile_menu_text: section.settings.mobile_menu_text, mobile_menu_show_socials: section.settings.mobile_menu_show_socials -%}
+  </div>
+</dialog>
+
+{% schema %}
+{
+  "name": "t:menu_drawer.name",
+  "tag": "aside",
+  "class": "section--menu-drawer",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "mobile_menu",
+      "default": "main-menu",
+      "label": "t:mobile_menu.settings.menu.label"
+    },
+    {
+      "type": "richtext",
+      "id": "mobile_menu_text",
+      "default": "<p>Address and phone number<\/p>",
+      "label": "t:text.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_menu_show_socials",
+      "default": true,
+      "label": "t:show_socials.label"
+    },
+    {
+      "type": "select",
+      "id": "mobile_menu_drawer_style",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:color_scheme.option_default"
+        },
+        {
+          "value": "inverse",
+          "label": "t:color_scheme.option_inverse"
+        },
+        {
+          "value": "primary",
+          "label": "t:color_scheme.option_accent_1"
+        },
+        {
+          "value": "secondary",
+          "label": "t:color_scheme.option_accent_2"
+        },
+        {
+          "value": "tertiary",
+          "label": "t:color_scheme.option_accent_3"
+        },
+        {
+          "value": "quaternary",
+          "label": "t:color_scheme.option_accent_4"
+        },
+        {
+          "value": "quinary",
+          "label": "t:color_scheme.option_accent_5"
+        },
+        {
+          "value": "senary",
+          "label": "t:color_scheme.option_accent_6"
+        }
+      ],
+      "default": "default",
+      "label": "t:mobile_menu.settings.drawer_style.label"
+    }
+  ]
+}
+{% endschema %}

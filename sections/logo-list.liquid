@@ -1,0 +1,391 @@
+{%- liquid
+  if section.settings.edge_style contains "top"
+    assign padding_classes = 'space--pt--small space--pb--xlarge'
+  elsif section.settings.edge_style contains "bottom"
+    assign padding_classes = 'space--pt--xlarge space--pb--medium'
+  else
+    assign padding_classes = 'space--pv--xlarge'
+  endif
+-%}
+
+<div class="color--underneath-{{ section.settings.background_color_scheme }} {% if section.settings.spacing_top %}space--mt--xlarge{% endif %} {% if section.settings.spacing_bottom %}space--mb--xlarge{% endif %}">
+  {%- if section.settings.edge_style contains "top" -%}
+    <div class="element--edge-wrapper">
+      <div class="element--{{ section.settings.edge_style }} color--bg-{{ section.settings.color_scheme }}"></div>
+    </div>
+  {%- endif -%}
+  <div class="color--bg-{{ section.settings.color_scheme }} {{ padding_classes }}">
+    <div class="container--page">
+      {%- unless section.settings.heading == blank -%}
+        <h2 class="type--heading title--{{ section.settings.heading_size }} align--text-center container--page">
+          {{ section.settings.heading | escape }}
+        </h2>
+      {%- endunless -%}
+      {%- unless section.settings.text == blank -%}
+        <div class="container--copy-max-width rte copy--{{ section.settings.text_size }} space--mt--small align--text-center align--block-center space--viewport-sides">
+          {{ section.settings.text }}
+        </div>
+      {%- endunless -%}
+
+      <ul class="logo-list {% unless section.settings.heading == blank and section.settings.text == blank %}space--mt--large{% endunless %} list--unstyled" style="opacity: {{ section.settings.logos_opacity | times: 0.01 }};">
+        {%- for block in section.blocks -%}
+          <li class="logo-list__item" {{ block.shopify_attributes }}>
+            {%- if block.settings.link_url -%}
+              <a href="{{ block.settings.link_url }}" class="display--block">
+            {%- else -%}
+              <div>
+            {%- endif -%}
+              {%- if block.settings.image -%}
+                {% capture image_styles %}max-width: {{ section.settings.image_max_width }}px;{% endcapture %}
+                {% capture image_sizes %}{{- section.settings.image_max_width | times: 0.5 -}}px{% endcapture %}
+                {{ block.settings.image | image_url: width: 850 | image_tag:
+                  loading: 'lazy',
+                  sizes: image_sizes,
+                  widths: '275, 550, 700, 850',
+                  class: 'align--block-center',
+                  style: image_styles
+                }}
+              {%- else %}
+                <div style="{{ image_styles }}">
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg element--full-width element--full-height align--block-center' }}
+                </div>
+              {%- endif -%}
+            {%- if block.settings.link_url -%}
+              </a>
+            {%- else -%}
+              </div>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+  {%- if section.settings.edge_style contains 'bottom' -%}
+    <div class="element--edge-wrapper">
+      <div class="element--{{ section.settings.edge_style }} color--bg-{{ section.settings.color_scheme }}"></div>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:logo_list.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "spacing_top",
+      "default": false,
+      "label": "t:spacing_top.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_bottom",
+      "default": false,
+      "label": "t:spacing_bottom.label"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:heading.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "large",
+          "label": "t:heading.settings.heading_size.option_large"
+        },
+        {
+          "value": "medium",
+          "label": "t:heading.settings.heading_size.option_medium"
+        },
+        {
+          "value": "small",
+          "label": "t:heading.settings.heading_size.option_small"
+        }
+      ],
+      "default": "large",
+      "label": "t:heading.settings.heading_size.label"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:text.label"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "options": [
+        {
+          "value": "large",
+          "label": "t:text.settings.text_size.option_large"
+        },
+        {
+          "value": "medium",
+          "label": "t:text.settings.text_size.option_medium"
+        },
+        {
+          "value": "small",
+          "label": "t:text.settings.text_size.option_small"
+        }
+      ],
+      "default": "medium",
+      "label": "t:text.settings.text_size.label"
+    },
+    {
+      "type": "range",
+      "id": "image_max_width",
+      "min": 50,
+      "max": 700,
+      "step": 25,
+      "unit": "px",
+      "label": "t:image.settings.max_width.label",
+      "default": 200
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:color_scheme.option_default"
+        },
+        {
+          "value": "inverse",
+          "label": "t:color_scheme.option_inverse"
+        },
+        {
+          "value": "primary",
+          "label": "t:color_scheme.option_accent_1"
+        },
+        {
+          "value": "secondary",
+          "label": "t:color_scheme.option_accent_2"
+        },
+        {
+          "value": "tertiary",
+          "label": "t:color_scheme.option_accent_3"
+        },
+        {
+          "value": "quaternary",
+          "label": "t:color_scheme.option_accent_4"
+        },
+        {
+          "value": "quinary",
+          "label": "t:color_scheme.option_accent_5"
+        },
+        {
+          "value": "senary",
+          "label": "t:color_scheme.option_accent_6"
+        }
+      ],
+      "default": "default",
+      "label": "t:color_scheme.label"
+    },
+    {
+      "type": "range",
+      "id": "logos_opacity",
+      "min": 25,
+      "max": 100,
+      "unit": "%",
+      "step": 5,
+      "default": 70,
+      "label": "t:logo_list.settings.logos_opacity.label"
+    },
+    {
+      "type": "header",
+      "content": "t:borders.name"
+    },
+    {
+      "type": "select",
+      "id": "edge_style",
+      "options": [
+        {
+          "value": "edge-solid-angle-top-up",
+          "label": "t:borders.settings.border_style.option_angled_up_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-angle-top-down",
+          "label": "t:borders.settings.border_style.option_angled_down_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-waves-angle-top-up",
+          "label": "t:borders.settings.border_style.option_waves_angled_up_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-waves-angle-top-down",
+          "label": "t:borders.settings.border_style.option_waves_angled_down_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-even-waves-top-1",
+          "label": "t:borders.settings.border_style.option_even_waves_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-even-waves-top-1-reverse",
+          "label": "t:borders.settings.border_style.option_even_waves_reverse_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-uneven-waves-top-1",
+          "label": "t:borders.settings.border_style.option_uneven_waves_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-uneven-waves-top-1-reverse",
+          "label": "t:borders.settings.border_style.option_uneven_waves_reverse_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-angle-bottom-up",
+          "label": "t:borders.settings.border_style.option_angled_up_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-angle-bottom-down",
+          "label": "t:borders.settings.border_style.option_angled_down_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-waves-angle-bottom-up",
+          "label": "t:borders.settings.border_style.option_waves_angled_up_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-waves-angle-bottom-down",
+          "label": "t:borders.settings.border_style.option_waves_angled_down_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-even-waves-bottom-1",
+          "label": "t:borders.settings.border_style.option_even_waves_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-even-waves-bottom-1-reverse",
+          "label": "t:borders.settings.border_style.option_even_waves_reverse_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-uneven-waves-bottom-1",
+          "label": "t:borders.settings.border_style.option_uneven_waves_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-uneven-waves-bottom-1-reverse",
+          "label": "t:borders.settings.border_style.option_uneven_waves_reverse_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-center-point-bottom",
+          "label": "t:borders.settings.border_style.option_center_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-center-pinch-bottom",
+          "label": "t:borders.settings.border_style.option_pinch_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "none",
+          "label": "t:borders.settings.border_style.option_none"
+        }
+      ],
+      "default": "none",
+      "label": "t:borders.settings.border_style.label"
+    },
+    {
+      "type": "select",
+      "id": "background_color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:color_scheme.option_default"
+        },
+        {
+          "value": "inverse",
+          "label": "t:color_scheme.option_inverse"
+        },
+        {
+          "value": "primary",
+          "label": "t:color_scheme.option_accent_1"
+        },
+        {
+          "value": "secondary",
+          "label": "t:color_scheme.option_accent_2"
+        },
+        {
+          "value": "tertiary",
+          "label": "t:color_scheme.option_accent_3"
+        },
+        {
+          "value": "quaternary",
+          "label": "t:color_scheme.option_accent_4"
+        },
+        {
+          "value": "quinary",
+          "label": "t:color_scheme.option_accent_5"
+        },
+        {
+          "value": "senary",
+          "label": "t:color_scheme.option_accent_6"
+        },
+        {
+          "value": "site-header-bg",
+          "label": "t:color_scheme.option_header_bg"
+        },
+        {
+          "value": "site-footer-bg",
+          "label": "t:color_scheme.option_footer_bg"
+        }
+      ],
+      "default": "default",
+      "label": "t:borders.settings.background_color_scheme.label",
+      "info": "t:borders.settings.background_color_scheme.info"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:image.label"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "t:icon_list.settings.link_url.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:logo_list.name",
+      "blocks": [
+        {
+          "type": "logo"
+        },
+        {
+          "type": "logo"
+        },
+        {
+          "type": "logo"
+        },
+        {
+          "type": "logo"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

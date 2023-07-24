@@ -1,0 +1,101 @@
+{% comment %}theme-check-disable UndefinedObject{% endcomment %}
+{%- assign pick_up_availabilities = product_variant.store_availabilities | where: 'pick_up_enabled', true -%}
+
+{%- if pick_up_availabilities.size > 0 -%}
+  <pickup-availability-preview class="pickup-availability-preview">
+    {%- assign closest_location = pick_up_availabilities.first -%}
+
+    <div>
+      {%- if closest_location.available -%}
+        <p class="flex flex--align-center copy--italic space--mb--xsmall">
+          {%- render 'icons', icon: 'checkmark', class: 'space--mr--xsmall' -%}
+          {{ 'products.product.pickup_availability.pick_up_available_at_html' | t: location_name: closest_location.location.name }}
+        </p>
+        <p class="copy--small">
+          {{ closest_location.pick_up_time }}.
+          <drawer-opener id="pickup-drawer-opener" data-drawer-id="pickup-drawer">
+            <button data-drawer-to-open="pickup-drawer" class="button--reset copy--small" aria-haspopup="dialog">
+              {%- if pick_up_availabilities.size == 1 -%}
+                {{ 'products.product.pickup_availability.view_store_info' | t }}
+              {%- else -%}
+                {{ 'products.product.pickup_availability.check_other_stores' | t }}
+              {%- endif -%}
+            </button>
+          </drawer-opener>
+        </p>
+      {%- else -%}
+        <p class="flex flex--align-center copy--italic space--mb--xsmall">
+          {%- render 'icons', icon: 'close', class: 'space--mr--xsmall' -%}
+          {{ 'products.product.pickup_availability.pick_up_unavailable_at_html' | t: location_name: closest_location.location.name }}
+        </p>
+        {%- if pick_up_availabilities.size > 1 -%}
+          <p class="copy--small">
+            <drawer-opener id="pickup-drawer-opener" data-drawer-id="pickup-drawer">
+              <button data-drawer-to-open="pickup-drawer" class="button--reset copy--small" aria-haspopup="dialog">
+                {{ 'products.product.pickup_availability.check_other_stores' | t }}
+              </button>
+            </drawer-opener>
+          </p>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </pickup-availability-preview>
+
+  <dialog id="pickup-drawer" class="drawer drawer--pickup motion-reduce" tabindex="-1"  data-drawer-dialog aria-labelledby="PickupAvailabilityDrawerTitle" hidden>
+    <header class="drawer__header">
+      <div class="space--mt--medium">
+        <h2 class="copy--bold title--xsmall type--hyphenate" id="PickupAvailabilityDrawerTitle">
+          {{ product_variant.product.title | escape }}
+        </h2>
+        {%- unless product_variant.product.has_only_default_variant -%}
+          <p class="flex flex--wrap copy--small space--mt--xsmall">
+            {%- for product_option in product_variant.product.options_with_values -%}
+              <span class="space--mr--xsmall">
+                {{ product_option.name | escape }}:&nbsp;
+                {%- for value in product_option.values -%}
+                  {%- if product_option.selected_value == value -%}
+                    {{ value | escape }}
+                  {%- endif -%}
+                {%- endfor -%}
+              </span>
+            {%- endfor -%}
+          </p>
+        {%- endunless -%}
+      </div>
+      <button class="button--icon space--mt--medium drawer__close-button--right" data-drawer-to-close="pickup-drawer" aria-label="{{ 'accessibility.close' | t }}">
+        {%- render 'icons', icon: 'close', size: '30' -%}
+      </button>
+    </header>
+
+    <div class="drawer__scrollable space--drawer-sides">
+      <ul class="space--mb--medium space--mt--small list--unstyled" data-store-availability-drawer-content>
+        {%- for availability in pick_up_availabilities -%}
+          <li class="element--border-top--thin space--pv--medium">
+            <h3 class="copy--bold">
+              {{ availability.location.name | escape }}
+            </h3>
+            <p class="flex space--mv--small copy--italic">
+              {%- if availability.available -%}
+                {% render 'icons', icon: 'checkmark', class: 'space--mr--xsmall' %} {{ 'products.product.pickup_availability.pick_up_available' | t }}, {{ availability.pick_up_time | downcase }}
+              {%- else -%}
+                {%- render 'icons', icon: 'close', class: 'space--mr--xsmall' -%}
+                {{ 'products.product.pickup_availability.pick_up_unavailable_at_html' | t: location_name: availability.location.name | escape }}
+              {%- endif -%}
+            </p>
+
+            {%- assign address = availability.location.address -%}
+            <address>
+              {{ address | format_address }}
+              {%- if address.phone.size > 0 -%}
+                <p>{{ address.phone }}</p>
+              {%- endif -%}
+            </address>
+            <a href="https://www.google.com/maps/dir/?api=1&destination={{ address | format_address | strip_html }}" target="_blank" rel="nofollow" class="space--mt--small display--block">
+              {{ 'map.get_directions' | t }}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </dialog>
+{%- endif -%}

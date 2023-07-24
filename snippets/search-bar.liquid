@@ -1,0 +1,66 @@
+{% comment %}
+    Renders a search bar
+
+    Accepts:
+    - aria_title: {String} Added as an ID value to the title of this section when it's inside of a dialog. It matches the 'aria-labelledby' attribute of it's parent dialog. (Optional)
+    - show_predictive_search: {Boolean} Show predictive search
+    - section_id: {String} Section ID (required)
+
+    Usage:
+    {%- render 'search-bar', section_id: section.id, show_predictive_search: true -%}
+{% endcomment %}
+
+{%- if show_predictive_search -%}
+  <predictive-search class="predictive-search" data-loading-text="{{ 'accessibility.loading' | t }}">
+{%- else -%}
+  <search-form>
+{%- endif -%}
+<form action="{{ routes.search_url }}" method="get" role="search" class="space--viewport-sides">
+  <div class="search-bar container--medium align--block-center">
+    <label {% if aria_title %}id="{{ aria_title }}"{% endif %}  class="space--mb--xsmall" for="SearchBox-{{ section_id }}">
+      {{ 'search.search' | t }}
+    </label>
+    <div class="inline-text-input">
+      <input
+        id="SearchBox-{{ section_id }}"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="{{ 'search.placeholder' | t }}" class="inline-text-input__input"
+        {%- if show_predictive_search -%}
+          role="combobox"
+          aria-expanded="false"
+          aria-owns="predictive-search-results-list"
+          aria-controls="predictive-search-results-list"
+          aria-haspopup="listbox"
+          aria-autocomplete="list"
+          autocorrect="off"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+        {%- endif -%}
+      >
+      <input type="hidden" name="options[prefix]" value="last">
+      <button type="reset" class="inline-text-input__reset button--icon {% if search.terms == blank %} display--hidden{% endif %}" aria-label="{{ 'search.reset' | t }}">
+        {% render 'icons', icon: 'clear' %}
+      </button>
+      <button class="inline-text-input__button button--icon" aria-label="{{ 'search.search' | t }}">
+        {% render 'icons', icon: 'search' %}
+      </button>
+    </div>
+  </div>
+
+  {%- if show_predictive_search -%}
+    <div class="predictive-search__container space--mt--medium" tabindex="-1" data-predictive-search>
+      <div class="predictive-search__loading-state">
+        {%- render 'loader', location: 'predictive-search', size: '60px' -%}
+      </div>
+    </div>
+    <span class="js-predictive-search-status display--hidden" role="status" aria-hidden="true"></span>
+  {%- endif -%}
+</form>
+{%- if show_predictive_search -%}
+  </predictive-search>
+{%- else -%}
+  </search-form>
+{%- endif -%}

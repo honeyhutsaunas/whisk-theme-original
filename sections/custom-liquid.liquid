@@ -1,0 +1,40 @@
+<div class="{% unless section.settings.full_width %}container--page{% endunless %} {% if section.settings.spacing_top %}space--pt--xlarge{% endif %} {% if section.settings.spacing_bottom %}space--pb--xlarge{% endif %}">
+  {{ section.settings.custom_liquid }}
+</div>
+
+{% schema %}
+{
+  "name": "t:custom_liquid.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "t:full_width.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_top",
+      "default": false,
+      "label": "t:spacing_top.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_bottom",
+      "default": false,
+      "label": "t:spacing_bottom.label"
+    },
+    {
+      "type": "liquid",
+      "id": "custom_liquid",
+      "label": "t:custom_liquid.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:custom_liquid.name"
+    }
+  ]
+}
+{% endschema %}

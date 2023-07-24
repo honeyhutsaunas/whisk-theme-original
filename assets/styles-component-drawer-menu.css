@@ -1,0 +1,92 @@
+.drawer-menu__toggle,
+.drawer-menu__link {
+  align-items: center;
+  display: block;
+  padding: var(--space-medium) var(--space-drawer-sides);
+  transition-property: background-color, text-decoration;
+  text-decoration: none;
+  width: 100%;
+}
+
+/* Fallback for Safari 14 and earlier that has flexbox bugs */
+.drawer-menu__toggle .icon--to-open {
+  float: right;
+}
+
+@supports (aspect-ratio: 1) {
+  .drawer-menu__toggle,
+  .drawer-menu__link {
+    display: flex;
+    gap: var(--space-xsmall);
+    justify-content: space-between;
+  }
+
+  .drawer-menu__toggle .icon--to-open {
+    float: none;
+  }
+}
+
+.drawer-menu__static-target {
+  padding: var(--space-small) var(--space-drawer-sides);
+}
+
+.no-js .drawer-menu__toggle,
+.no-js .drawer-menu__link,
+.no-js .drawer-menu a {
+  --color-link: var(--color-nav-text);
+  --color-link-raw: var(--color-nav-text-raw);
+}
+
+.no-js .drawer-menu {
+  color: var(--color-nav-text);
+}
+
+.drawer-menu__toggle:hover,
+.drawer-menu__link:hover,
+.drawer-menu__toggle:focus-visible,
+.drawer-menu__link:focus-visible {
+  box-shadow: none;
+  background-color: hsla(var(--color-link-raw), 0.05);
+  outline: 0;
+}
+
+.drawer-menu details[open],
+.drawer-menu details[open] summary,
+.drawer-menu details[open] a {
+  background-color: hsla(var(--color-link-raw), 0.05);
+}
+
+.drawer-menu details[open] .drawer-menu__static-target {
+  background-color: hsla(var(--color-foreground-raw), 0.05);
+}
+
+.drawer-menu details[open] .drawer-menu__static-target a {
+  background-color: transparent;
+}
+
+.drawer-menu details[open] .drawer-menu__static-target a:hover {
+  background-color: transparent;
+}
+
+.drawer-menu details[open] summary:hover,
+.drawer-menu details[open] a:hover,
+.drawer-menu details[open] summary:focus-visible,
+.drawer-menu details[open] a:focus-visible {
+  background-color: hsla(var(--color-link-raw), 0.1);
+  box-shadow: none;
+  outline: 0;
+}
+
+.drawer-menu__link--grandchild {
+  padding-left: calc(var(--space-drawer-sides) * 2);
+}
+
+.drawer-menu__toggle--main,
+.drawer-menu__link--main {
+  font-size: var(--font-copy-size-large);
+}
+
+.drawer-menu__main-dropdown[open] .drawer-menu__toggle--main .icon--to-open,
+.drawer-menu__main-dropdown-dropdown[open] .drawer-menu__toggle--main-dropdown .icon--to-open {
+  transform: rotate(-45deg);
+}

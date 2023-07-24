@@ -1,0 +1,75 @@
+<footer class="cart-footer" id="cart-footer">
+  <div class="js-cart-footer-contents">
+    <div id="cart-footer-contents" class="container--small align--block-center {% if cart == empty %}display--hidden{% endif %}">
+      {%- if settings.cart_note and cart != empty -%}
+        <cart-note>
+          <details class="accordion accordion--no-border" id="CartNote-{{ section.id }}">
+            <summary class="accordion__summary">
+              <span>
+                {{ 'cart.note_title' | t }}
+              </span>
+              <span class="icon--to-open motion-reduce">
+                {%- render 'icons', icon: 'plus', size: '1.2rem' -%}
+              </span>
+            </summary>
+            <div class="accordion__content rte" id="CartNoteTextArea-{{ section.id }}">
+              <label for="Cart-note" class="display--hidden">
+                {{ 'cart.note_label' | t }}
+              </label>
+              <textarea class="space--mb--small" name="note" id="Cart-note" placeholder="{{ 'cart.note_placeholder' | t }}">
+                {{- cart.note -}}
+              </textarea>
+            </div>
+          </details>
+        </cart-note>
+      {%- endif -%}
+      <div class="align--block-center {% unless settings.cart_note %}space--pt--large{% endunless %}">
+        <div class="align--text-center space--mb--small">
+          <div>
+            {%- if cart.cart_level_discount_applications.size > 0 -%}
+              <ul class="list--unstyled space--mb--medium flex flex--justify-center space--gap--small" aria-label="{{ 'customer.order.discount' | t }}">
+                {%- for discount in cart.cart_level_discount_applications -%}
+                  <li class="badge badge--discount badge--floating">
+                    <span>
+                      {{ discount.title }}
+                      (-{{ discount.total_allocated_amount | money }})
+                    </span>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </div>
+
+          <div>
+            <button type="submit" class="element--full-width js-cart-checkout-button" name="checkout"{% if cart == empty %} disabled{% endif %} form="cart">
+              {{ 'cart.checkout' | t }} {{ cart.total_price | money_with_currency }}
+            </button>
+          </div>
+
+          {%- if settings.cart_dynamic_checkout -%}
+            {%- if additional_checkout_buttons -%}
+              <div class="space--mt--small cart-form__additional-checkout-buttons">
+                {{ content_for_additional_checkout_buttons }}
+              </div>
+            {%- endif -%}
+          {%- endif -%}
+
+          {%- if settings.cart_shipping_tax_note -%}
+            <p class="copy--xsmall copy--italic space--mt--medium align--text-center">
+              {%- if cart.taxes_included and shop.shipping_policy.body != blank -%}
+                {{ 'cart.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
+              {%- elsif cart.taxes_included -%}
+                {{ 'cart.taxes_included_but_shipping_at_checkout' | t }}
+              {%- elsif shop.shipping_policy.body != blank -%}
+                {{ 'cart.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url }}
+              {%- else -%}
+                {{ 'cart.taxes_and_shipping_at_checkout' | t }}
+              {%- endif -%}
+            </p>
+          {%- endif -%}
+        </div>
+        <div id="cart-errors" class="copy--bold"></div>
+      </div>
+    </div>
+  </div>
+</footer>

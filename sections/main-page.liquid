@@ -1,0 +1,15 @@
+<div class="container--page space--mv--xlarge">
+  <h1 class="type--heading title--large space--mb--large align--text-center">
+    {{ page.title | escape }}
+  </h1>
+  <div class="rte container--copy-max-width align--block-center">
+    {{ page.content }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page content",
+  "tag": "section"
+}
+{% endschema %}

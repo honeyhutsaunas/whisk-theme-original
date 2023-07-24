@@ -1,0 +1,210 @@
+{%- if predictive_search.performed -%}
+  {%- liquid
+    if predictive_search.resources.queries.size > 0
+      assign queries_present = true
+    endif
+
+    if predictive_search.resources.products.size > 0
+      assign products_present = true
+    endif
+
+    if predictive_search.resources.collections.size > 0
+      assign collections_present = true
+    endif
+
+    if predictive_search.resources.articles.size > 0
+      assign articles_present = true
+    endif
+
+    if predictive_search.resources.pages.size > 0
+      assign pages_present = true
+    endif
+  -%}
+
+  <div id="predictive-search-results" class="predictive-search__results-container {% if queries_present %}predictive-search__results-container--with-suggestions{% endif %}" role="listbox" data-predictive-search>
+    {%- if queries_present -%}
+      <div class="predictive-search__queries">
+        <h2 id="predictive-search-queries" class="predictive-search__queries-title type--accent copy--bold">{{ 'search.suggestions' | t }}</h2>
+        <ul class="predictive-search__queries-list list--unstyled" role="group" aria-labelledby="predictive-search-queries">
+          {%- for query in predictive_search.resources.queries -%}
+            <li id="predictive-search-option-query-{{ forloop.index }}" role="option" aria-selected="false">
+              <a href="{{ query.url }}" class="predictive-search__queries-link link--no-underline">
+                {{ query.styled_text }}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    <div class="predictive-search__tabbed-results">
+      <div class="predictive-search__actions">
+        <button-tabs class="button-tabs predictive-search__button-tabs" data-section-id="{{ section.id }}">
+          {%- if products_present -%}
+            <button class="button-tabs__trigger type--accent copy--bold active" data-tab-button="predictive-search-tab-products">
+              <h2>
+                {{ 'search.products' | t }}
+              </h2>
+            </button>
+          {%- endif -%}
+          {%- if collections_present -%}
+            <button class="button-tabs__trigger type--accent copy--bold {% unless products_present %}active" tabindex="-1"{% else %}"{% endunless %} data-tab-button="predictive-search-tab-collections">
+              <h2>
+                {{ 'search.collections' | t }}
+              </h2>
+            </button>
+          {%- endif -%}
+          {%- if articles_present -%}
+            <button class="button-tabs__trigger type--accent copy--bold {% unless products_present or collections_present %}active" tabindex="-1"{% else %}"{% endunless %}" data-tab-button="predictive-search-tab-articles">
+              <h2>
+                {{ 'search.articles' | t }}
+              </h2>
+            </button>
+          {%- endif -%}
+          {%- if pages_present -%}
+            <button class="button-tabs__trigger type--accent copy--bold {% unless products_present or collections_present or articles_present %}active" tabindex="-1"{% else %}"{% endunless %}" data-tab-button="predictive-search-tab-pages">
+              <h2>
+                {{ 'search.pages' | t }}
+              </h2>
+            </button>
+          {%- endif -%}
+        </button-tabs>
+        <button class="predictive-search__search-all-button predictive-search__search-all-button--desktop">
+          {{ 'search.see_all_html' | t: terms: predictive_search.terms }}
+          {%- render 'icons', icon: 'arrow', size: '1em', class: 'space--ml--xsmall' -%}
+        </button>
+      </div>
+
+      <div class="button-tabs__content-container">
+        {%- if products_present -%}
+          <div id="predictive-search-tab-products" class="button-tabs__content active" data-tab-section="{{ section.id }}">
+            <h2 id="predictive-search-products" class="display--hidden">
+              {{ 'search.products' | t }}
+            </h2>
+            <ul id="predictive-search-results-list" class="list--unstyled predictive-search__list predictive-search__list--products" aria-labelledby="predictive-search-products">
+              {%- for product in predictive_search.resources.products -%}
+                <li id="predictive-search-option-{{ forloop.index }}" role="option" aria-selected="false" class="predictive-search__list-item">
+                  {% render 'product-card',
+                    enable_quick_add: false,
+                    image_sizes: '(min-width: 900px) 25vw, 35vw',
+                    location: 'predictive-search',
+                    product_card_product: product,
+                    section_id: section.id,
+                    show_price: settings.predictive_search_show_price,
+                    show_product_subtitle: false,
+                    show_quick_add: false,
+                    show_swatches: false,
+                    show_vendor: settings.predictive_search_show_vendor
+                  %}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        {%- if collections_present -%}
+          <div id="predictive-search-tab-collections" class="button-tabs__content {% unless products_present %}active" tabindex="-1"{% else %}"{% endunless %}  data-tab-section="{{ section.id }}">
+            <h2 id="predictive-search-queries" class="display--hidden">
+              {{ 'search.collections' | t }}
+            </h2>
+            <ul class="predictive-search__list predictive-search__list--collections list--unstyled" role="group" aria-labelledby="predictive-search-queries">
+              {%- for collection in predictive_search.resources.collections -%}
+                <li id="predictive-search-option-collection-{{ forloop.index }}" role="option" aria-selected="false" class="predictive-search__list-item">
+                  {%- render 'collection-card',
+                    card_style: 'background-image',
+                    collection: collection,
+                    collection_image: settings.predictive_search_collection_image,
+                    image_sizes: '(min-width: 768px) 25vw, 50vw',
+                    overlay_color: settings.predictive_search_collection_overlay_color,
+                    overlay_opacity: settings.predictive_search_collection_overlay_opacity,
+                    overlay_text_color: settings.predictive_search_collection_overlay_text_color,
+                    show_item_count: false,
+                    section_id: section.id,
+                    title_size: 'small'
+                  -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+        {%- if articles_present -%}
+          <div id="predictive-search-tab-articles" class="button-tabs__content {% unless products_present or collections_present %}active" tabindex="-1"{% else %}"{% endunless %}" data-tab-section="{{ section.id }}">
+            <h2 id="predictive-search-pages" class="display--hidden">
+              {{ 'search.articles' | t }}
+            </h2>
+            <ul id="predictive-search-results-pages-list" class="predictive-search__list predictive-search__list--articles list--unstyled" role="group" aria-labelledby="predictive-search-pages">
+              {%- for article in predictive_search.resources.articles -%}
+                <li id="predictive-search-option-article-{{ forloop.index }}" role="option" aria-selected="false" class="predictive-search__list-item">
+                  {%- render 'article-card',
+                    article: article,
+                    section_id: section.id,
+                    show_author: false,
+                    in_search_results: false,
+                    show_date: false,
+                    show_image: true,
+                    show_teaser_text: false,
+                    title_size: 'x-small'
+                  -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        {%- if pages_present -%}
+          <div id="predictive-search-tab-pages" class="button-tabs__content {% unless products_present or collections_present or articles_present %}active" tabindex="-1"{% else %}"{% endunless %}" data-tab-section="{{ section.id }}">
+            <h2 id="predictive-search-pages" class="display--hidden">
+              {{ 'search.pages' | t }}
+            </h2>
+            <ul id="predictive-search-results-pages-list" class="predictive-search__list predictive-search__list--pages list--unstyled" role="group" aria-labelledby="predictive-search-pages">
+              {%- for page in predictive_search.resources.pages -%}
+                <li id="predictive-search-option-page-{{ forloop.index }}" role="option" aria-selected="false" class="predictive-search__list-item">
+                  <a href="{{ page.url }}" class="link--no-underline type--heading copy--large">
+                    {{ page.title }}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <button class="predictive-search__search-all-button predictive-search__search-all-button--mobile space--mt--large">
+      {{ 'search.see_all_html' | t: terms: predictive_search.terms }}
+      {%- render 'icons', icon: 'arrow', size: '1em', class: 'space--ml--xsmall' -%}
+    </button>
+
+    <div class="predictive-search__loading-state" aria-hidden="true">
+      {%- render 'loader', size: '60px' -%}
+    </div>
+  </div>
+
+  {% assign total_results = predictive_search.resources.queries.size
+    | plus: predictive_search.resources.collections.size
+    | plus: predictive_search.resources.pages.size
+    | plus: predictive_search.resources.articles.size
+    | plus: predictive_search.resources.products.size
+  %}
+
+  <span class="display--hidden" data-predictive-search-live-region-count-value>
+    {% liquid
+      if total_results == 0
+        echo 'search.no_results' | t: terms: predictive_search.terms
+      else
+        echo 'search.results_with_count' | t: count: total_results | append: ': '
+        if predictive_search.resources.queries.size > 0
+          assign count = predictive_search.resources.queries.size | plus: predictive_search.resources.collections.size
+          echo 'search.results_suggestions_with_count' | t: count: count | append: ', '
+        endif
+        if predictive_search.resources.pages.size > 0
+          assign count = predictive_search.resources.pages.size | plus: predictive_search.resources.articles.size
+          echo 'search.results_pages_with_count' | t: count: count | append: ', '
+        endif
+        if predictive_search.resources.products.size > 0
+          echo 'search.results_products_with_count' | t: count: predictive_search.resources.products.size
+        endif
+      endif
+    %}
+  </span>
+{%- endif -%}

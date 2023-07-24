@@ -1,0 +1,6 @@
+slider-component {
+  --slider-button-size: var(--pointer-element-min-height);
+
+  position: relative;
+  display: block;
+}

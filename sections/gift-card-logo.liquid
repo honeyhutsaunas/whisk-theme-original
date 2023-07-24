@@ -1,0 +1,60 @@
+{% style %}
+  .gift-card__logo {
+    width: {{ section.settings.header_logo_width }}px;
+  }
+
+  @media screen and (max-width: 549px) {
+    .gift-card__logo {
+      width: {{ section.settings.header_logo_width_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+{%- if section.settings.header_logo != blank -%}
+  {%- assign image_size_2x = section.settings.header_logo_width | times: 2 | at_most: 1000 -%}
+  <img srcset="{{ section.settings.header_logo | image_url: width: section.settings.header_logo_width }} 1x, {{ section.settings.header_logo | image_url: width: image_size_2x }} 2x"
+    src="{{ section.settings.header_logo | image_url: width: section.settings.logo_width }}"
+    loading="eager"
+    class="gift-card__logo display--inline-block space--viewport-sides"
+    width="{{ section.settings.header_logo.width }}"
+    height="{{ section.settings.header_logo.height }}"
+    alt="{{ section.settings.header_logo.alt | default: shop.name | escape }}"
+  >
+{%- else -%}
+  <span class="type--heading title--small type--hyphenate">
+    {{ shop.name }}
+  </span>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:gift_card_logo.name",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "header_logo",
+      "label": "t:header.settings.logo.label"
+    },
+    {
+      "type": "range",
+      "id": "header_logo_width",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "default": 90,
+      "unit": "px",
+      "label": "t:header.settings.logo_width.label"
+    },
+    {
+      "type": "range",
+      "id": "header_logo_width_mobile",
+      "min": 40,
+      "max": 200,
+      "step": 10,
+      "default": 50,
+      "unit": "px",
+      "label": "t:header.settings.logo_width_mobile.label"
+    }
+  ]
+}
+{% endschema %}

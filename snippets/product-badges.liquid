@@ -1,0 +1,40 @@
+{% comment %}
+  Renders new, coming soon, sale or sold out product badges
+
+  Accepts:
+  class: {String} Custom CSS class for the component
+  product: {Object} Product (required)
+  show_badges: {Boolean} Renders 'Sale' and 'Sold Out' badges if the product matches the condition (required)
+
+  Usage:
+  {%- render 'product-badges', show_badges: settings.show_badges, product: product, class: 'space--ml--medium' -%}
+{% endcomment %}
+{%- if show_badges -%}
+  {%- if product.available == false -%}
+    {%- if product.metafields.badges.coming_soon -%}
+      <div class="badge badge--coming-soon {{ class }}" aria-hidden="true">
+        <span>
+          {{ 'products.product.coming_soon' | t }}
+        </span>
+      </div>
+    {%- else -%}
+      <div class="badge badge--sold-out {{ class }}" aria-hidden="true">
+        <span>
+          {{ 'products.product.sold_out' | t }}
+        </span>
+      </div>
+    {%- endif -%}
+  {%- elsif product.compare_at_price > product.price and product.available -%}
+    <div class="badge badge--sale {{ class }}" aria-hidden="true">
+      <span>
+        {{ 'products.product.on_sale' | t }}
+      </span>
+    </div>
+  {%- elsif product.metafields.badges.new -%}
+    <div class="badge badge--new {{ class }}" aria-hidden="true">
+      <span>
+        {{ 'products.product.new' | t }}
+      </span>
+    </div>
+  {%- endif -%}
+{%- endif -%}

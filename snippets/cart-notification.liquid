@@ -1,0 +1,22 @@
+{% comment %}
+    Renders a cart notification after an item has been added to the cart
+
+    Accepts:
+    - item_added_to_cart: {String} Message based on type of cart selected from theme settings. (required)
+
+    Usage:
+    {% render 'cart-notification', item_added_to_cart: item_added_to_cart %}
+{% endcomment %}
+
+<cart-notification>
+  <div class="container--page cart-notification__wrapper">
+    <div id="cart-notification" class="cart-notification color--bg-default" aria-label="{{ item_added_to_cart }}" role="dialog" aria-labelledby="CartNotificationTitle" tabindex="-1" hidden>
+      <header class="flex flex--justify-end">
+        <button data-modal-close class="button--icon" aria-label="{{ 'accessibility.close' | t }}">
+          {%- render 'icons', icon: 'close', size: '30px' -%}
+        </button>
+      </header>
+      <div id="cart-notification-product"></div>
+    </div>
+  </div>
+</cart-notification>

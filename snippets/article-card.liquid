@@ -1,0 +1,125 @@
+{% comment %}
+    Renders an article card for a given blog with settings.
+
+    Accepts:
+    - article: {Object} Article object (required)
+    - class: {String} The class to be added to the card
+    - featured_article_color_scheme: {String} Styling class that is added to the content box of a featured article
+    - first_section: {Boolean} If the card is the first section of the page
+    - image_sizes: {String} sizes attribute to make the image responsive (default: '50vw')
+    - in_search_results: {Boolean} Whether the article is being displayed in search results
+    - is_featured: {Boolean} Whether the article is featured
+    - section_id: {String} The section id
+    - show_image: {Boolean} The setting either show the article image or not. If an article placeholder image is set, it will show the placeholder image if there is no article image.
+    - show_date: {Boolean} The setting either show the article date or not.
+    - show_author: {Boolean} The setting either show the article author or not.
+    - show_teaser_text: {Boolean} The setting either show the article teaser text or not.
+    - title_size: {String} The size of the title
+    Usage:
+    {%- render 'article-card'
+      article: article,
+      image_sizes: '50vw',
+      in_search_results: true,
+      show_image: section.settings.show_image,
+      show_date: section.settings.show_date,
+      show_author: section.settings.show_author
+      title_size: 'small'
+    -%}
+{% endcomment %}
+
+<article class="article-card{% if show_image == false %} article-card--no-image {% endif %} {{ class }}" aria-labelledby="Article-{{ article.id }}">
+  {%- if in_search_results -%}
+    <div class="badge badge--floating">
+      <span>
+        {{ 'search.article' | t }}
+      </span>
+    </div>
+  {%- endif -%}
+  
+  {%- if show_image -%}
+    {%- if article != blank -%}
+      <a href="{{ article.url }}" class="image-container image-container--article article-card__image-container {% unless first_section %}fade-in-image{% endunless %} link--no-underline">
+    {%- else -%}
+      <div class="image-container image-container--article article-card__image-container {% unless first_section %}fade-in-image{% endunless %}">
+    {%- endif -%}
+      {%- if article.image -%}
+        {%- liquid
+          if image_sizes
+            assign image_sizes = image_sizes
+          else
+            assign image_sizes = '50vw'
+          endif
+
+          if first_section
+            assign image_loading = 'eager'
+          else
+            assign image_loading = 'lazy'
+          endif 
+        -%}
+        {{ article.image | image_url: width: 2000 | image_tag:
+          loading: image_loading,
+          sizes: image_sizes,
+          widths: '375, 550, 720, 990, 1200, 1500, 2000',
+          class: 'object-fit__image--cover'
+        }}
+      {%- elsif article == blank -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg object-fit__image--cover' }}
+      {%- endif -%}
+    {%- if article != blank -%}
+      </a>
+    {%- else -%}
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+
+  <div class="article-card__content {% if featured_article_color_scheme %}{{ featured_article_color_scheme }}{% else %} color--bg-default{% endif %}">
+    <div class="article-card__content-within">
+      <h2 class="type--heading {% if title_size == 'x-small' %}copy--large{% else %}title--small{% endif %} type--hyphenate space--mb--xsmall" id="Article-{{ article.id }}-{{ section_id }}">
+        {%- if article != blank -%}
+          <a href="{{ article.url }}" class="link--no-underline">
+            {{ article.title | escape }}
+          </a>
+        {%- else -%}
+          {{ 'onboarding.article_title' | t }}
+        {%- endif -%}
+      </h2>
+      <div class="line-height--heading">
+        {%- if show_date -%}
+          {%- if article != blank -%}
+            <span class="article-card__meta-info type--accent">
+              {{- article.published_at | time_tag: format: settings.date_format -}}
+            </span>
+          {%- else -%}
+            <span class="article-card__meta-info type--accent">
+              {{- "now" | time_tag: format: settings.date_format -}}
+            </span>
+          {%- endif -%}
+        {%- endif -%}
+        {%- if show_author and article.author -%}
+          <span class="article-card__meta-info type--accent">
+            {{ 'blogs.article.by' | t }} {{ article.author }}
+          </span>
+        {%- endif -%}
+        {%- if article.comments_count > 0 and blog.comments_enabled? -%}
+          <span class="article-card__meta-info type--accent">
+            {{ 'blogs.article.comments' | t: count: article.comments_count }}
+          </span>
+        {%- endif -%}
+      </div>
+      <p class="article-card__excerpt space--mt--small">
+        {%- if show_teaser_text -%}
+          {%- if article.excerpt.size > 0 -%}
+            {{ article.excerpt | strip_html | truncatewords: 20 }}
+          {%- else -%}
+            {{ article.content | strip_html | truncatewords: 20 }}
+          {%- endif -%}
+        {%- endif -%}
+        {%- if article.url -%}
+          <a href="{{ article.url }}" class="display--block space--mt--xsmall">
+            {{ 'blogs.article.read_more' | t }}
+          </a>
+        {%- endif -%}
+      </p>
+    </div>
+  </div>
+</article>

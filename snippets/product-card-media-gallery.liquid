@@ -1,0 +1,54 @@
+{% comment %}
+    Renders Product Card Image gallery
+
+    Accepts:
+    - product_card_prpduct: {Object} Product object
+    - section_id: {String} Section ID
+
+    Usage:
+    {%- render 'product-card-media-gallery',
+      product_card_product: product_card_product,
+      section_id: section.id,
+      image_sizes: image_sizes,
+      image_loading: image_loading,
+      widths: '375, 550, 720, 990, 1200, 1500, 2000'
+    -%}
+{% endcomment %}
+
+<product-card-media-gallery id="ProductCardMediaGallery-{{ section_id }}-{{ product_card_product.id }}">
+  <a class="image-container image-container--product display--block  product-card-media-gallery__link" href="{{ product_card_product.url | within: collection | default: '#' }}" tabindex="-1" data-product-link>
+    {%- if product_card_product.featured_media -%}
+      <div class="product-card-media-gallery__image-container fade-in-image is-active" data-media-id="featured-image" data-gallery-media-container>
+        {{ product_card_product.featured_media | image_url: width: 2000 | image_tag:
+          loading: image_loading,
+          sizes: image_sizes,
+          widths: widths,
+          class: 'object-fit__image--cover'
+        }}
+      </div>
+
+      {%- for variant in product_card_product.variants -%}
+        {%- if variant.featured_image -%}
+          <div class="product-card-media-gallery__image-container" data-media-id="{{ section_id }}-{{ product_card_product.id }}-{{ variant.featured_media.id }}" data-variant-url="{{ variant.url | within: collection }}" data-gallery-media-container>
+            {{ variant.featured_image | image_url: width: 2000 | image_tag:
+              loading: image_loading,
+              sizes: image_sizes,
+              widths: widths,
+              class: 'object-fit__image--cover'
+            }}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+    {%- elsif settings.product_placeholder -%}
+      <div class="fade-in-image">
+        {{ settings.product_placeholder | image_url: width: 2000 | image_tag:
+          loading: image_loading,
+          sizes: image_sizes,
+          widths: widths,
+          class: 'object-fit__image--cover'
+        }}
+      </div>
+    {%- endif -%}
+  </a>
+</product-card-media-gallery>

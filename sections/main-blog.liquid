@@ -1,0 +1,180 @@
+{%- liquid
+  if section.settings.show_featured_article
+    assign featured_article = blog.articles | first
+  endif
+
+  assign featured_article_color_scheme = 'color--bg-' | append: section.settings.featured_featured_article_color_scheme
+  assign featured_article_classes = 'blog-posts__post blog-posts__post--featured article-card--featured article-card--' | append: section.settings.content_box_shape
+  assign article_classes =  'article-card--' | append: section.settings.content_box_shape
+-%}
+
+<header class="space--mt--large container--page">
+  <h1 class="type--heading title--large align--text-center">
+    {% if current_tags %}
+      <a href="{{ blog.url }}" class="link--no-underline display--inline-block type--heading title--large">
+        {{ blog.title }}
+      </a>
+    {% else %}
+      {{ blog.title | escape }}
+    {% endif %}
+  </h1>
+  {%- if section.settings.show_tags and blog.all_tags.size > 1 -%}
+    <div class="flex flex--justify-center flex--wrap space--mt--medium">
+      <h2 class="space--mr--small line-height--copy align--text-center">
+        {{ 'blogs.blog.filter_by_tag' | t }}
+      </h2>
+      <ul class="comma-list list--unstyled">
+        {% for tag in blog.all_tags %}
+          {%- if current_tags contains tag -%}
+            <li class="display--inline-block active">
+              {{- tag | link_to_remove_tag: tag -}}
+            </li>
+          {%- else -%}
+            <li class="display--inline-block">
+              {{- tag | link_to_add_tag: tag -}}
+            </li>
+          {%- endif -%}
+        {% endfor %}
+      </ul>
+    </div>
+  {%- endif -%}
+</header>
+
+{%- paginate blog.articles by 12 -%}
+  {%- if blog.articles.size == 0 -%}
+    <div class="container--page align--text-center space--mv--xlarge">
+      <h2 class="copy--italic">
+        {{ 'blogs.blog.empty' | t }}
+      </h2>
+    </div>
+  {%- else -%}
+    <div class="blog-posts {% if section.settings.show_featured_article %}blog-posts--with-featured-article{% endif %} blog-posts--page grid--3-columns grid--reset--medium-down space--mv--large container--page list--unstyled">
+      {%- liquid
+        if section.settings.show_featured_article and paginate.current_page == 1
+          render 'article-card', article: featured_article, first_section: true, image_sizes: '(min-width: 768px) 80vw, (min-width: 900px) 900px, 100vw', is_featured: true, section_id: section.id, show_image: true, show_date: section.settings.show_date, show_author: section.settings.show_author, show_teaser_text: true, featured_article_color_scheme: featured_article_color_scheme, class: featured_article_classes
+        endif
+
+        if paginate.current_page == 1 and section.settings.show_featured_article
+          for article in blog.articles offset: 1
+            render 'article-card', article: article, image_sizes: '(min-width: 768px) 34vw, 100vw', section_id: section.id, show_image: section.settings.show_image, show_date: section.settings.show_date, show_author: section.settings.show_author, show_teaser_text: section.settings.show_teaser_text, class: article_classes
+          endfor
+        else
+          for article in blog.articles
+            render 'article-card', article: article, image_sizes: '(min-width: 768px) 34vw, 100vw', section_id: section.id, show_image: section.settings.show_image, show_date: section.settings.show_date, show_author: section.settings.show_author, show_teaser_text: section.settings.show_teaser_text, class: article_classes
+          endfor
+        endif
+      -%}
+    </div>
+  {%- endif -%}
+  {%- if paginate.pages > 1 -%}
+    <div class="space--mb--large">
+      {%- render 'pagination', paginate: paginate -%}
+    </div>
+  {%- endif -%}
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "t:blog.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "default": true,
+      "label": "t:blog.settings.show_tags.label"
+    },
+    {
+      "type": "header",
+      "content": "t:article_card.name"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "default": true,
+      "label": "t:article_card.settings.show_image.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "default": true,
+      "label": "t:article_card.settings.show_date.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "default": false,
+      "label": "t:article_card.settings.show_author.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_teaser_text",
+      "default": true,
+      "label": "t:article_card.settings.show_teaser.label",
+      "info": "t:article_card.settings.show_teaser.info"
+    },
+    {
+      "type": "select",
+      "id": "content_box_shape",
+      "options": [
+        {
+          "value": "rectangle",
+          "label": "t:content_box_shape.option_rectangle"
+        },
+        {
+          "value": "half-arch",
+          "label": "t:content_box_shape.option_half_arch"
+        }
+      ],
+      "default": "half-arch",
+      "label": "t:content_box_shape.label"
+    },
+    {
+      "type": "header",
+      "content": "t:blog_posts.settings.featured_article"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_featured_article",
+      "default": true,
+      "label": "t:blog_posts.settings.show_featured_article.label"
+    },
+    {
+      "type": "select",
+      "id": "featured_featured_article_color_scheme",
+      "options": [
+        {
+          "value": "inverse",
+          "label": "t:color_scheme.option_inverse"
+        },
+        {
+          "value": "primary",
+          "label": "t:color_scheme.option_accent_1"
+        },
+        {
+          "value": "secondary",
+          "label": "t:color_scheme.option_accent_2"
+        },
+        {
+          "value": "tertiary",
+          "label": "t:color_scheme.option_accent_3"
+        },
+        {
+          "value": "quaternary",
+          "label": "t:color_scheme.option_accent_4"
+        },
+        {
+          "value": "quinary",
+          "label": "t:color_scheme.option_accent_5"
+        },
+        {
+          "value": "senary",
+          "label": "t:color_scheme.option_accent_6"
+        }
+      ],
+      "default": "secondary",
+      "label": "t:blog_posts.settings.featured_article_color_scheme.label"
+    }
+  ]
+}
+{% endschema %}

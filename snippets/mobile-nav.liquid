@@ -1,0 +1,112 @@
+{% comment %}
+    Renders the mobile menu
+
+    Accepts:
+    - aria_title: {String} Added as an ID value to the title of this section when it's inside of a dialog. It matches the 'aria-labelledby' attribute of it's parent dialog.
+    - mobile_menu: {Object} The menu object to display
+    - mobile_menu_text: {String} Text to display underneath the links
+    - mobile_menu_show_socials: {Boolean} Whether or not to show the social links
+
+    Usage:
+    {%- render 'mobile-nav', aria_title: 'menu-drawer-title', mobile_menu: section.settings.mobile_menu, mobile_menu_text: section.settings.mobile_menu_text, mobile_menu_show_socials: section.settings.mobile_menu_show_socials -%}
+{% endcomment %}
+
+
+<div class="mobile-nav drawer-menu">
+  <nav>
+    <h2 {% if aria_title %}id="{{ aria_title }}"{% endif %} class="display--hidden">
+      {{ 'header.menu' | t }}
+    </h2>
+    <ul class="list--unstyled drawer-menu__main-list">
+      {%- for link in mobile_menu.links -%}
+        <li class="drawer-menu__main-list-item">
+          {%- if link.links != blank -%}
+            <details class="drawer-menu__main-dropdown">
+              <summary class="drawer-menu__toggle drawer-menu__toggle--main">
+                <span>
+                  {{ link.title | escape }}
+                </span>
+                <span class="icon--to-open motion-reduce">
+                  {%- render 'icons', icon: 'plus', size: '1.25rem' -%}
+                </span>
+              </summary>
+              <div id="link-{{ link.title | escape }}" class="motion-reduce" tabindex="-1">
+                <div>
+                  <ul class="drawer-menu__main-dropdown-list-item list--unstyled" tabindex="-1">
+                    {%- for childlink in link.links -%}
+                      <li class="drawer-menu__main-dropdown-list-item">
+                        {%- if childlink.links == blank -%}
+                          <a href="{{ childlink.url }}" {% if childlink.current %} aria-current="page"{% endif %} class="drawer-menu__link drawer-menu__link--main-dropdown">
+                            {{ childlink.title | escape }}
+                          </a>
+                        {%- else -%}
+                          <details class="drawer-menu__main-dropdown-dropdown">
+                            <summary class="drawer-menu__toggle drawer-menu__toggle--main-dropdown">
+                              <span>
+                                {{ childlink.title | escape }}
+                              </span>
+                              <span class="icon--to-open motion-reduce">
+                                {%- render 'icons', icon: 'plus', size: '1rem' -%}
+                              </span>
+                            </summary>
+                            <div id="childlink-{{ childlink.title | escape }}" class="motion-reduce">
+                              <ul class="list--unstyled" tabindex="-1">
+                                {%- for grandchildlink in childlink.links -%}
+                                  <li>
+                                    <a href="{{ grandchildlink.url }}" {% if grandchildlink.current %} aria-current="page"{% endif %} class="drawer-menu__link drawer-menu__link--grandchild">
+                                      {{ grandchildlink.title | escape }}
+                                    </a>
+                                  </li>
+                                {%- endfor -%}
+                                {%- unless childlink.url == "#" -%}
+                                  <li>
+                                    <a class="drawer-menu__link drawer-menu__link--grandchild" href="{{ childlink.url }}" {% if link.current %} aria-current="page"{% endif %}>
+                                      {{ 'header.see_all' | t }}
+                                    </a>
+                                  </li>
+                                {%- endunless -%}
+                              </ul>
+                            </div>
+                          </details>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              </div>
+            </details>
+          {%- else -%}
+            <a class="drawer-menu__link drawer-menu__link--main" href="{{ link.url }}" {% if link.current %} aria-current="page"{% endif %}>
+              {{ link.title | escape }}
+            </a>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+      <li class="drawer-menu__main-list-item">
+        {%- if shop.customer_accounts_enabled -%}
+          <a class="drawer-menu__link drawer-menu__link--main" href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}">
+            {%- liquid
+              if customer
+                echo 'customer.account_fallback' | t
+              else
+                echo 'customer.log_in' | t
+              endif
+            -%}
+          </a>
+        {%- endif -%}
+      </li>
+    </ul>
+  </nav>
+
+  {%- if mobile_menu_text -%}
+    <div class="rte space--mt--medium space--drawer-sides">
+      {{ mobile_menu_text }}
+    </div>
+  {%- endif -%}
+
+  {%- if mobile_menu_show_socials -%}
+    <div class="space--mv--large space--drawer-sides">
+      {%- render 'social-list', alignment: 'left' -%}
+    </div>
+  {%- endif -%}
+</div>

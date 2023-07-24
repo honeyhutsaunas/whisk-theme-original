@@ -1,0 +1,15 @@
+<div class="site-header__cart-indicator space--mt--xsmall">
+  {% render 'icons', icon: 'cart' %}
+  {%- if cart != empty -%}
+    <div class="site-header__cart-count color--bg-primary">
+      {%- if cart.item_count < 100 -%}
+        <span aria-hidden="true">
+          {{- cart.item_count -}}
+        </span>
+      {%- endif -%}
+      <span class="display--hidden">
+        {{ 'header.cart_count' | t: count: cart.item_count }}
+      </span>
+    </div>
+  {%- endif -%}
+</div>

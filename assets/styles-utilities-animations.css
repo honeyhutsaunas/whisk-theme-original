@@ -1,0 +1,57 @@
+.animate--fade-in,
+.animate--step-in,
+.animate--step-in .animate__step-container > * {
+  animation: animateFadeInUp var(--animation-duration) var(--transition-timing-function) forwards;
+  opacity: 0;
+}
+
+.animate--fade-in.animate--loaded {
+  --animation-duration: 750ms;
+}
+
+.animate--step-in.animate--loaded {
+  --animation-duration: 500ms;
+  --input-duration: calc(var(--animation-duration) * 0.5);
+}
+
+.animate--step-in.animate--loaded .animate__step-container > * {
+  animation-delay: calc(var(--input-duration) * var(--i));
+}
+
+@media (prefers-reduced-motion) {
+  .animate--fade-in,
+  .animate--step-in,
+  .animate--step-in .animate__step-container > * {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+}
+
+.no-js .animate--fade-in,
+.no-js .animate--step-in,
+.no-js .animate--step-in .animate__step-container > * {
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+@keyframes animateFadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--space-large));
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes animateFadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

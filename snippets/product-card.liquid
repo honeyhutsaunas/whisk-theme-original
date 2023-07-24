@@ -1,0 +1,296 @@
+{% comment %}
+    Renders a product card
+
+    Accepts:
+    - center_text: {Boolean} Center align the text in the card
+    - class: {String} Additional classes to add to the card
+    - first_section: {Boolean} If the card is the first section of the page
+    - image_sizes: {String} sizes attribute to make the image responsive (default: '50vw')
+    - location: {String} Used when there's the possibility of more than one card of the same product being loaded in the same section (e.g.'mobile' and 'desktop' sliders) (optional)
+    - product_card_product: {Object} Product Liquid object
+    - section_id: {String} ID of the section to which the product card belongs.
+    - enable_quick_add: {Boolean} Enable product quick add.
+    - show_price: {Boolean} Show the product price.
+    - show_product_subtitle: {Boolean} Show the product subtitle metafield
+    - show_swatches: {Boolean} Show the product swatches.
+    - show_vendor: {Boolean} Show the product vendor.
+
+    Usage:
+    {% render 'product-card',center_text: section.settings.center_text, enable_quick_add: settings.product_quick_add_enabled, image_sizes: image_sizes, product_card_product: product, section_id: section.id, show_price: true, show_product_subtitle: section.settings.show_product_subtitle, show_vendor: section.settings.show_vendor %}
+{% endcomment %}
+
+{%- liquid
+  assign product_form_id = product_card_product.id | append: section_id
+
+  if settings.cart_icon == "icon_cart"
+    assign add_to_cart_label = 'products.product.add_to_cart' | t
+  elsif settings.cart_icon == "icon_bag"
+    assign add_to_cart_label = 'products.product.add_to_bag' | t
+  else
+    assign add_to_cart_label = 'products.product.add_to_basket' | t
+  endif
+
+  if product_card_product.available and enable_quick_add
+    assign show_quick_add = true
+    assign quick_add_modal_id = product_form_id | append: location
+  else
+    assign show_quick_add = false
+  endif
+
+  if image_sizes
+    assign image_sizes = image_sizes
+  else
+    assign image_sizes = '50vw'
+  endif
+
+  if first_section
+    assign image_loading = 'eager'
+  else
+    assign image_loading = 'lazy'
+  endif
+
+  assign badge_classes = badge_class | append: 'badge--floating'
+-%}
+
+<div class="product-card {% if show_quick_add %}product-card__quick-add-container{% endif %} product-card--badge-{{ settings.product_card_badge_placement }} product-card--swatches-{{ settings.product_card_swatches_placement }} {{ class }}" data-product-card="{{ product_card_product.id }}">
+  <div class="product-card__content {% if center_text %}align--text-center{% else %}align--text-left{% endif %}">
+    {%- render 'product-card-media-gallery',
+      image_sizes: image_sizes,
+      image_loading: image_loading,
+      product_card_product: product_card_product,
+      section_id: section_id,
+      widths: '375, 550, 720, 990, 1200, 1500, 2000'
+    -%}
+    {%- liquid
+      if settings.product_card_badge_placement == 'over-image'
+        render 'product-badges', class: badge_classes, product: product_card_product, show_badges: settings.show_badges
+      endif 
+    -%}
+
+    {% comment %} Product information {% endcomment %}
+    <div class="product-card__info">
+      {%- if settings.product_card_badge_placement == 'under-image' -%}
+        <div {% if center_text %}class="align--block-center"{% endif %}>
+          {%-
+            render 'product-badges',
+              class: badge_classes,
+              product: product_card_product,
+              show_badges: settings.show_badges
+          -%}
+        </div>
+      {%- endif -%}
+      <div>
+        <a class="link--no-underline link--color-foreground display--inline-block" href="{{ product_card_product.url | within: collection | default: '#' }}" data-product-link>
+          <h3 class="product-card__title line-height--heading type--hyphenate space--mb--xsmall">
+            {{- product_card_product.title | escape -}}
+          </h3>
+        </a>
+        {%- if show_product_subtitle and product_card_product.metafields.descriptors.subtitle -%}
+          <div class="rte space--mb--xsmall copy--small line-height--heading">
+            {{ product_card_product.metafields.descriptors.subtitle.value }}
+          </div>
+        {%- endif -%}
+        {%- if show_vendor -%}
+          <span class="display--hidden">{{ 'accessibility.vendor' | t }}</span>
+          <span class="type--accent space--mb--xsmall display--block type--hyphenate">
+            {{ product_card_product.vendor }}
+          </span>
+        {%- endif -%}
+        {%- if show_price -%}
+          <div class="product-card__price-badge {% if center_text %}flex flex--align-center--justify-center{% endif %}">
+            {%- render 'price', product: product_card_product -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {% comment %} Swatches {% endcomment %}
+      {%- if product_card_product.has_only_default_variant == false and settings.product_card_show_swatches and show_swatches -%}
+        <variant-selects class="variant-picker product-card__exposed-swatches no-js-hidden" data-product-form-id="{{ product_form_id }}" data-update-url="false" data-section-id="{{ section_id }}" data-product-id="{{ product_card_product.id }}">
+          {%- for option in product_card_product.options_with_values -%}
+            {%- capture unique_option_id -%}option-{{ product_card_product.id }}--{{ option.name | handleize }}--{{ location }}{%- endcapture -%}
+      
+            {% comment %} Check if the option should be converted to a swatch {% endcomment %}
+            {%- liquid 
+              assign swatch_options = settings.product_variant_swatches | split: ", "
+              assign option_name_handle = option.name | handleize
+              assign convert_to_swatches = false
+              
+              assign first_swatch_option = swatch_options | first
+              assign option_handle = first_swatch_option | handleize
+              if option_handle == option_name_handle
+                assign convert_to_swatches = true
+              endif
+            -%}
+            {%- if convert_to_swatches -%}
+              <fieldset class="variant-picker__swatches space--mt--small" data-swatch-option="{{ product_form_id }}" data-option-position="{{ forloop.index }}">
+                <legend class="variant-picker__option-name display--hidden">
+                  {{ option.name }}: <span class="variant-picker__swatches-name copy--small copy--default" data-swatch-name>{{ option.selected_value }}</span>
+                </legend>
+                <ul class="variant-picker__swatches-list list--unstyled variant-picker__swatches-list--{{ settings.product_variant_swatch_shape }} {% if center_text %}flex--justify-center{% else %}{% endif %}">
+                  {%- for value in option.values -%}
+                    {%- liquid 
+                      assign swatch_color = 'var(--color-background)'
+      
+                      for swatch in shop.metaobjects.swatches.values
+                        assign swatch_handle = swatch.name | handleize
+                        assign value_handle = value | handleize
+
+                        if swatch_handle == value_handle
+                          if swatch.color
+                            assign swatch_color = swatch.color
+                          endif
+      
+                          if swatch.image
+                            assign swatch_image = swatch.image | image_url: width: 70 | image_tag: loading: 'lazy', class: 'object-fit__image--cover'
+                          else
+                            assign swatch_image = false
+                          endif
+                        endif
+                      endfor 
+                    -%}
+                    <li class="variant-picker__swatches-item variant-picker__swatches-item--{{ forloop.index }} {% if forloop.index >= 6 %}variant-picker__swatches-item--hide-over-image{% endif %}" style="--i: {{ forloop.index }}">
+                      <label class="variant-picker__swatches-label" for="{{ unique_option_id }}--{{ value | handleize }}--{{ forloop.index0 }}" tabindex="0">
+                        <input type="radio"
+                          name="{{ unique_option_id }}"
+                          value="{{ value | escape }}"
+                          id="{{ unique_option_id }}--{{ value | handleize }}--{{ forloop.index0 }}" 
+                          {% if option.selected_value == value %}checked{% endif %}
+                          form="{{ product_form_id }}"
+                          data-radio-id="{{ product_form_id }}-{{ forloop.index0 }}"
+                          tabindex="-1"
+                        >
+                        <div class="button button--swatch button--swatch-{{ settings.product_variant_swatch_shape }}">
+                          <div class="variant-picker__swatch-shape-container element--{{ settings.product_variant_swatch_shape }}">
+                            <div class="variant-picker__swatches-color" style="background: {{ swatch_color }}">
+                            </div>
+                            {%- if swatch_image -%}
+                              {{ swatch_image }}
+                            {%- endif -%}
+                          </div>
+                        </div>
+                        <span class="display--hidden">{{ value }}</span>
+                      </label>
+                    </li>
+                    {% comment %} if there's more than 5 swatches on desktop over image, or 4 on mobile, show a button to open quick add modal indicating there are more options {% endcomment %}
+                    {%- if forloop.index == 6 or forloop.index == 5 -%}
+                      <li class="variant-picker__swatches-item variant-picker__swatches-see-more--{{ forloop.index }}">
+                        <modal-opener class="button button--swatch button--swatch-{{ settings.product_variant_swatch_shape }} variant-picker__modal-opener" data-modal="#QuickAdd-{{ quick_add_modal_id }}">
+                          <button class="button--reset variant-picker__swatch-shape-container element--{{ settings.product_variant_swatch_shape }}">
+                            <span class="display--hidden">{{ 'products.product.see_options' | t }}</span>
+                            <span class="variant-picker__swatches-color">
+                              {%- render 'icons', icon: 'plus', size: '18' -%}
+                            </span>
+                          </button>
+                        </modal-opener>
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              </fieldset>
+            {%- else -%}
+              {% comment %} Include hidden select for non-swatch options so that the variant selected can be known {% endcomment %}
+              <fieldset class="display--hidden" data-option-position="{{ option.position }}">
+                <select id="{{ unique_option_id }}--{{ value | handleize }}--{{ forloop.index0 }}"
+                  name="{{ unique_option_id }}"
+                  form="{{ product_form_id }}"
+                  data-select-id="{{ product_form_id }}-{{ forloop.index0 }}"
+                >
+                  {%- for value in option.values -%}
+                    <option value="{{ value | escape }}" {% if option.selected_value == value %}selected="selected"{% endif %}>
+                      {{- value -}}
+                    </option>
+                  {%- endfor -%}
+                </select>
+              </fieldset>
+            {%- endif -%}
+          {%- endfor -%}
+          <script type="application/json">
+            {{ product_card_product.variants | json }}
+          </script>
+        </variant-selects>
+      {%- endif -%}
+
+      {% comment %} Quick add button and modal {% endcomment %}
+      {%- if show_quick_add -%}
+        {%- if product_card_product.has_only_default_variant -%}
+          <div class="product-card__quick-add-button-container no-js-hidden">
+            <a href="{{ product_card_product.url | within: collection | default: '#' }}" tabindex="-1" class="product-card__quick-add-product-link" data-product-link>
+            </a>
+            <product-form class="element--full-width">
+              {%- form 'product', product_card_product, id: product_form_id, class: 'element--full-width', novalidate: 'novalidate', data-type: 'add-to-cart-form', data-form-id: form_id -%}
+                <input type="hidden" name="id" value="{{ product_card_product.selected_or_first_available_variant.id }}" />
+                <input min="1" type="number" id="quantity" name="quantity" value="1" class="display--hidden" tabindex="-1" />
+                <button type="submit" class="product-card__button flex--none" data-submit-button {% if product_card_product.selected_or_first_available_variant.available == false %}disabled{% endif %}>
+                  <span data-submit-button-text>
+                    {{ add_to_cart_label }}
+                  </span>
+                </button>
+                <div data-error-message-wrapper role="alert" hidden class="space--mb--small">
+                  {%- render 'icons', icon: 'error', class: 'form-message__icon space--mr--xsmall' -%}
+                  <span data-error-message class="form-message"></span>
+                </div>
+              {%- endform -%}
+            </product-form>
+          </div>
+        {%- else -%}
+          <modal-opener class="product-card__quick-add-button-container no-js-hidden" data-modal="#QuickAdd-{{ quick_add_modal_id }}">
+            <a href="{{ product_card_product.url | within: collection | default: '#' }}" tabindex="-1" class="product-card__quick-add-product-link" data-product-link>
+            </a>
+            <button class="product-card__button button--secondary space--ph--medium">
+              {{ 'products.product.see_options' | t }}
+            </button>
+          </modal-opener>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if show_quick_add and product_card_product.has_only_default_variant == false -%}
+    <simple-modal-dialog id="QuickAdd-{{ quick_add_modal_id }}" class="product-card__quick-add-modal motion-reduce" hidden>
+      <h3 id="ProductCardQuickAddModalTitle-{{ product_card_product.id }}" class="display--hidden">
+        {{ 'products.product.quick_shop_title' | t: product: product_card_product.title }}
+      </h3>
+      <button id="ModalClose-{{ quick_add_modal_id }}" type="button" class="button--icon product-card__quick-add-close-button" aria-label="{{ 'accessibility.close' | t }}">
+        {% render 'icons', icon: 'close', size: '30px' %}
+      </button>
+      <div class="product-card__quick-add-form-container no-js-hidden" role="dialog" aria-label="{{ 'products.product.see_options' | t }}" aria-labelledby="ProductCardQuickAddModalTitle-{{ product_card_product.id }}" tabindex="-1">
+        <product-form>
+          {%- form 'product', product_card_product, id: product_form_id, class: 'element--full-width', novalidate: 'novalidate', data-type: 'add-to-cart-form', data-form-id: product_form_id -%}
+            <a class="product-card__quick-add-title type--hyphenate link--no-underline space--pb--small" href="{{ product_card_product.url | within: collection | default: '#' }}" data-product-link>
+              {{- product_card_product.title | escape -}}
+            </a>
+            {%- render 'product-variant-picker',
+              location: 'product-card',
+              product: product_card_product,
+              product_form_id: product_form_id,
+              section_id: section_id,
+              update_url: false
+            -%}
+            <input type="hidden" name="id" value="{{ product_card_product.selected_or_first_available_variant.id }}" />
+            <input min="1" type="number" id="quantity" name="quantity" value="1" class="display--hidden" />
+            <button type="submit" class="product-card__button space--mt--medium space--ph--medium" data-submit-button {% if product.selected_or_first_available_variant.available == false %}disabled{% endif %}>
+              <span data-submit-button-text>
+                {{ add_to_cart_label }}
+              </span>
+              <div data-button-price-container>
+                {{- cart.currency.symbol -}}
+                <span data-button-price>
+                  {{- product_card_product.selected_or_first_available_variant.price | money_without_currency -}}
+                </span>
+              </div>
+            </button>
+            <p class="align--text-center space--mt--small">
+              <a href="{{ product_card_product.url | within: collection | default: '#' }}" data-product-link>
+                {{ 'products.product.view_details' | t }}
+              </a>
+            </p>
+            <div data-error-message-wrapper role="alert" hidden class="space--mb--small">
+              {%- render 'icons', icon: 'error', class: 'form-message__icon space--mr--xsmall' -%}
+              <span data-error-message class="form-message"></span>
+            </div>
+          {%- endform -%}
+        </product-form>
+      </div>
+    </simple-modal-dialog>
+  {%- endif -%}
+</div>

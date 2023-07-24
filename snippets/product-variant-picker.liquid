@@ -1,0 +1,232 @@
+{% comment %}
+    Renders an ajax product variant picker
+
+    Accepts:
+    - location: {String} Location of the variant picker. (required)
+    - product: {Object} Product Liquid object (required)
+    - product_form_id: {String} The unique id of the product form to connect the variant picker to other form elements.
+    - section_id: {String} Section id. (required)
+    - update_url: {Boolean} Add the variant info to the pages url. Only use as true on that product's product page.
+
+    Usage:
+    {%- render 'product-variant-picker', product: product, product_form_id: product_form_id, section_id: section.id, update_url: true -%}
+{% endcomment %}
+
+{%- unless product.has_only_default_variant -%}  
+  {%- liquid
+    assign variants_available_arr = product.variants | map: 'available'
+    assign variants_option1_arr = product.variants | map: 'option1'
+    assign variants_option2_arr = product.variants | map: 'option2'
+    assign variants_option3_arr = product.variants | map: 'option3'
+  -%}  
+
+  <variant-selects class="variant-picker no-js-hidden" data-product-form-id="{{ product_form_id }}" data-url="{{ product.url }}" data-update-url="{{ update_url }}" data-section-id="{{ section_id }}" data-main-product-section-id="{{ main_section_id }}" data-product-id="{{ product.id }}">
+    {%- for option in product.options_with_values -%}
+      {%- capture unique_option_id -%}option-{{ product.id }}--{{ option.name | handleize }}--{{ location }}{%- endcapture -%}
+
+      {% comment %} Check if the option should be converted to a swatch or button {% endcomment %}
+      {%- liquid 
+        assign swatch_options = settings.product_variant_swatches | split: ", "
+        assign button_options = settings.product_variant_buttons | split: ", " 
+        assign option_name_handle = option.name | handleize
+        assign convert_to_swatches = false
+        assign convert_to_buttons = false
+        
+        for option in swatch_options
+          assign option_handle = option | handleize
+          if option_handle == option_name_handle
+            assign convert_to_swatches = true
+          endif
+        endfor
+
+        for option in button_options
+          assign option_handle = option | handleize
+          if option_handle == option_name_handle
+            assign convert_to_buttons = true
+          endif
+        endfor
+      -%}
+      {%- if convert_to_swatches -%}
+        <fieldset class="variant-picker__swatches align--text-left space--mb--small {% if location == 'pdp-quick-add' %}display--hidden{% endif %}" data-swatch-option="{{ product_form_id }}" data-option-position="{{ forloop.index }}">
+          <legend class="variant-picker__option-name">
+            {{ option.name }}: <span class="variant-picker__swatches-name copy--small copy--default" data-swatch-name>{{ option.selected_value }}</span>
+          </legend>
+          <ul class="variant-picker__swatches-list list--unstyled variant-picker__swatches-list--{{ settings.product_variant_swatch_shape }}">
+            {%- for value in option.values -%}
+              {%- liquid 
+                assign option_disabled = true
+
+                for option1_name in variants_option1_arr
+                  case option.position
+                    when 1
+                      if variants_option1_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                        assign option_disabled = false
+                      endif
+                    when 2
+                      if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                        assign option_disabled = false
+                      endif
+                    when 3
+                      if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == product.selected_or_first_available_variant.option2 and variants_option3_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                        assign option_disabled = false
+                      endif
+                  endcase
+                endfor
+
+                assign swatch_color = 'var(--color-background)'
+
+                for swatch in shop.metaobjects.swatches.values
+                  assign swatch_handle = swatch.name | handleize
+                  assign value_handle = value | handleize
+
+                  if swatch_handle == value_handle
+                    if swatch.color
+                      assign swatch_color = swatch.color
+                    endif
+
+                    if swatch.image
+                      assign swatch_image = swatch.image | image_url: width: 70 | image_tag: loading: 'eager', class: 'object-fit__image--cover'
+                    else
+                      assign swatch_image = false
+                    endif
+                  endif
+                endfor 
+              -%}
+
+              <li>
+                <label class="variant-picker__swatches-label {% if option_disabled %}unavailable{% endif %}" for="{{ unique_option_id }}--{{ value | handleize }}--{{ forloop.index0 }}" tabindex="0">
+                  <input type="radio"
+                    name="{{ unique_option_id }}"
+                    value="{{ value | escape }}"
+                    id="{{ unique_option_id }}--{{ value | handleize }}--{{ forloop.index0 }}" 
+                    {% if option.selected_value == value %}checked{% endif %}
+                    form="{{ product_form_id }}"
+                    data-radio-id="{{ product_form_id }}-{{ forloop.index0 }}"
+                    tabindex="-1"
+                  >
+                  <div class="button button--swatch button--swatch-{{ settings.product_variant_swatch_shape }}">
+                    <div class="variant-picker__swatch-shape-container element--{{ settings.product_variant_swatch_shape }}">
+                      <div class="variant-picker__swatches-color" style="background: {{ swatch_color }}">
+                      </div>
+                      {%- if swatch_image -%}
+                        {{ swatch_image }}
+                      {%- endif -%}
+                    </div>
+                  </div>
+                  <span class="display--hidden">{{ value }}</span>
+                </label>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </fieldset>
+      {%- elsif convert_to_buttons -%}
+        <fieldset class="variant-picker__buttons align--text-left space--mb--small {% if location == 'pdp-quick-add' %}display--hidden{% endif %}" data-option-position="{{ option.position }}">
+          <legend class="variant-picker__option-name">
+            {{ option.name }}
+          </legend>
+          <ul class="variant-picker__buttons-list list--unstyled">
+            {%- for value in option.values -%}
+              {%- liquid 
+                assign option_disabled = true
+
+                for option1_name in variants_option1_arr
+                  case option.position
+                    when 1
+                      if variants_option1_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                        assign option_disabled = false
+                      endif
+                    when 2
+                      if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                        assign option_disabled = false
+                      endif
+                    when 3
+                      if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == product.selected_or_first_available_variant.option2 and variants_option3_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                        assign option_disabled = false
+                      endif
+                  endcase
+                endfor
+              -%}
+              <li>
+                <label class="variant-picker__buttons-label {% if option_disabled %}unavailable{% endif %}" for="{{ unique_option_id }}--{{ value | handleize }}--{{ forloop.index0 }}" tabindex="0">
+                  <input type="radio"
+                    name="{{ unique_option_id }}"
+                    value="{{ value | escape }}"
+                    id="{{ unique_option_id }}--{{ value | handleize }}--{{ forloop.index0 }}" 
+                    {% if option.selected_value == value %}checked{% endif %}
+                    form="{{ product_form_id }}"
+                    data-radio-id="{{ product_form_id }}-{{ forloop.index0 }}"
+                    tabindex="-1"
+                  >
+                  <div class="button button--radio">
+                    <span class="variant-picker__buttons-value">
+                      {{ value }}
+                    </span>
+                  </div>
+                </label>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </fieldset>
+      {%- else -%}
+        <fieldset class="variant-picker__dropdowns align--text-left space--mb--small {% if location == 'pdp-quick-add' %}display--hidden{% endif %}" data-option-position="{{ option.position }}">
+          <label class="variant-picker__option-name" for="{{ unique_option_id }}--{{ value | handleize }}--{{ forloop.index0 }}">
+            {{ option.name }}
+          </label>
+          <div class="form-dropdown">
+            <select id="{{ unique_option_id }}--{{ value | handleize }}--{{ forloop.index0 }}"
+              name="{{ unique_option_id }}"
+              form="{{ product_form_id }}"
+              data-select-id="{{ product_form_id }}-{{ forloop.index0 }}"
+            >
+              {%- for value in option.values -%}
+                {%- liquid 
+                  assign option_disabled = true
+
+                  for option1_name in variants_option1_arr
+                    case option.position
+                      when 1
+                        if variants_option1_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                          assign option_disabled = false
+                        endif
+                      when 2
+                        if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                          assign option_disabled = false
+                        endif
+                      when 3
+                        if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == product.selected_or_first_available_variant.option2 and variants_option3_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                          assign option_disabled = false
+                        endif
+                    endcase
+                  endfor
+                -%}
+                <option value="{{ value | escape }}" {% if option.selected_value == value %}selected="selected"{% endif %}>
+                  {% if option_disabled -%}
+                    {{- 'products.product.value_unavailable' | t: option_value: value -}}
+                  {%- else -%}
+                    {{- value -}}
+                  {%- endif %}
+                </option>
+              {%- endfor -%}
+            </select>
+            {% render 'icons', icon: 'caret', class: 'form-dropdown__caret', size: '20' %}
+          </div>
+        </fieldset>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if location == 'pdp-quick-add' -%}
+      <ul class="variant-picker__static list--unstyled" data-quick-add-variants>
+        {%- for option in product.options_with_values -%}
+          <li class="variant-picker__static-item" data-quick-add-option={{ option.name }}>
+            <strong class="variant-picker__static-name copy--bold" data-quick-add-name>{{ option.name }}:</strong>
+            <span class="variant-picker__static-name" data-quick-add-value>{{ option.selected_value }}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <script type="application/json">
+      {{ product.variants | json }}
+    </script>
+  </variant-selects>
+{%- endunless -%}

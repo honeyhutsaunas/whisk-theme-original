@@ -1,0 +1,62 @@
+<div class="space--mv--xlarge">
+  <div class="align--block-{{ section.settings.desktop_text_box_position }} align--text-{{ section.settings.desktop_text_box_position }} container--page">
+    <div>
+      <span class="type--heading title--large display--block space--mb--medium">
+        {{ '404.subtext' | t }}
+      </span>
+      <h1 class="type--heading title--small space--mb--medium">
+        {{ '404.title' | t }}
+      </h1>
+      <div class="align--block-{{ section.settings.desktop_text_box_position }} space--mb--medium rte">
+        {{ section.settings.description }}
+      </div>
+      <a href="{{ section.settings.button_link }}" class="align--block-{{ section.settings.desktop_text_box_position }} button element--max-content-width">
+        {{- section.settings.button_label | escape -}}
+      </a>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:404_page.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "desktop_text_box_position",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:text.settings.text_alignment.option_left"
+        },
+        {
+          "value": "center",
+          "label": "t:text.settings.text_alignment.option_center"
+        }
+      ],
+      "default": "center",
+      "label": "t:text.settings.text_alignment.label"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "default": "<p>Sorry, the page you are looking for doesn't exist.</p>",
+      "label": "t:text.label"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Continue Shopping",
+      "label": "t:buttons.settings.button_label.label",
+      "info": "t:buttons.settings.button_label.info"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "default": "/collections/all",
+      "label": "t:buttons.settings.button_link.label"
+    }
+  ]
+}
+{% endschema %}

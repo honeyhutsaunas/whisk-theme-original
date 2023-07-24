@@ -1,0 +1,396 @@
+{% comment %}theme-check-disable UnknownFilter{% endcomment %}
+{{ 'styles-template-article.css' | asset_url | stylesheet_tag }}
+
+<article class="article container--page container--flush {% if section.settings.spacing_top %}space--mt--xlarge{% endif %} {% if section.settings.spacing_bottom %}space--mb--xlarge{% endif %}" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article__container {% if article.image %}article__container--with-image{% endif %}">
+    {%- if article.image -%}
+      <div class="article__image-container article__image-container--{{ section.settings.image_shape }} image-container {% if block.settings.add_top_margin %}space--mt--large{% endif %}" itemprop="image">
+        {{ article.image | image_url: width: 3840 | image_tag:
+          loading: 'eager',
+          sizes: '100vw',
+          widths: '375, 550, 720, 990, 1200, 1500, 2000, 2400, 3000, 3840',
+          class: 'object-fit__image--cover'
+        }}
+      </div>
+    {%- endif -%}
+
+    <header class="article__header">
+      {%- if section.settings.blog_show_breadcrumbs -%}
+        {%- render 'breadcrumbs', class: 'space--mb--medium space--viewport-sides' -%}
+      {%- endif -%}
+      {%- if section.settings.blog_show_date -%}
+        <div class="badge space--mb--medium" itemprop="dateCreated pubdate datePublished">
+          <span>
+            {{ article.published_at | time_tag: format: settings.date_format }}
+          </span>
+        </div>
+      {%- endif -%}
+      <h1 class="type--heading title--large article__title space--viewport-sides" itemprop="headline">
+        {{ article.title | escape }}
+      </h1>
+      {%- if section.settings.blog_show_excerpt -%}
+        <div class="rte article__excerpt article__copy-container space--mv--small space--viewport-sides copy--italic">
+          {{ article.excerpt }}
+        </div>
+      {%- endif -%}
+      <div class="space--viewport-sides">
+        {%- if section.settings.blog_show_author -%}
+          <span class="copy--small" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span itemprop="name">
+              {{ 'blogs.article.by' | t }} {{ article.author }}
+            </span>
+          </span>
+        {%- endif -%}
+      </div>
+    </header>
+
+    <div class="article__blocks space--viewport-sides">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when '@app' -%}
+            <div class="space--mb--small" {{ block.shopify_attributes }}>
+              {% render block %}
+            </div>
+
+          {%- when 'content'-%}
+            <div class="rte article__content space--mv--large" itemprop="articleBody" {{ block.shopify_attributes }}>
+              {{ article.content }}
+            </div>
+
+          {%- when 'divider'-%}
+            <div class="space--mv--large" {{ block.shopify_attributes }}>
+              <hr class="article__divider" />
+            </div>
+
+          {%- when 'products' -%}
+            <div {{ block.shopify_attributes }}>
+              {% comment %}theme-check-disable NestedSnippet{% endcomment %}
+              {%- render 'article-products',
+                add_top_margin: block.settings.add_top_margin,
+                border_bottom: block.settings.bottom_border,
+                border_top: block.settings.top_border,
+                center_content: block.settings.center_text,
+                desktop_slider_setting: block.settings.show_slider_desktop,
+                heading: block.settings.heading,
+                heading_size: block.settings.heading_size,
+                mobile_slider_setting: block.settings.show_slider_mobile,
+                products_metafield: article.metafields.references.products,
+                section_id: section.id,
+                show_price: block.settings.show_price,
+                show_product_subtitle: block.settings.show_product_subtitle,
+                show_vendor: block.settings.show_vendor
+              -%}
+              {% comment %}theme-check-enable NestedSnippet{% endcomment %}
+            </div>
+
+          {%- when 'share' -%}
+            <div {% if block.settings.add_top_margin %}class="space--pt--large"{% endif %} {{ block.shopify_attributes }}>
+              {%- render 'social-share',
+                class: 'article__social-share',
+                section_id: section.id,
+                show_facebook_share: block.settings.show_facebook_share,
+                show_linkedin_share: block.settings.show_linkedin_share,
+                show_pinterest_share: block.settings.show_pinterest_share,
+                show_twitter_share: block.settings.show_twitter_share
+              -%}
+            </div>
+
+          {%- when 'tags' -%}
+            {% unless article.tags.size == 0 %}
+              <div class="article__tags flex flex--align-center {% if block.settings.add_top_margin %}space--mt--large{% endif %}" {{ block.shopify_attributes }}>
+                <span class="space--mr--small">
+                  {{ 'blogs.article.tags' | t }}
+                </span>
+                <ul class="flex flex--align-center space--gap--small list--unstyled">
+                  {% for tag in article.tags %}
+                    <li class="space--ml--xsmall">
+                      <a class="button button--tag button--secondary" href="{{ blog.url }}/tagged/{{ tag | handle }}">
+                        {{ tag }}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endunless %}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="article__pagination space--viewport-sides">
+    {% if blog.articles.size > 1 %}
+      <nav class="article__pagination-links space--mt--large">
+        {% if blog.previous_article %}
+          <a href="{{ blog.previous_article }}" class="article__pagination-link article__pagination-link--previous link--with-arrow flex">
+            <p class="space--ml--xsmall">
+              <span>
+                {{ 'blogs.article.previous_article' | t }}
+              </span>
+              <span class="flex space--mt--small type--accent type--hyphenate">
+                {%- render 'icons', icon: 'arrow', size: '1.2em', class: 'link__arrow link__arrow--back space--mr--xsmall' -%}
+                {{ blog.previous_article.title }}
+              </span>
+            </p>
+          </a>
+        {% endif %}
+        {% if blog.next_article %}
+          <a href="{{ blog.next_article }}" class="article__pagination-link article__pagination-link--next link--with-arrow">
+            <p class="space--mr--xsmall">
+              <span>
+                {{ 'blogs.article.next_article' | t }}
+              </span>
+              <span class="flex space--mt--small type--accent type--hyphenate">
+                {{ blog.next_article.title }}
+                {% render 'icons', icon: 'arrow', size: '1.2em', class: 'link__arrow space--ml--xsmall' %}
+              </span>
+            </p>
+          </a>
+        {% endif %}
+      </nav>
+      <div class="article__pagination-blog align--text-center space--mt--medium">
+        <a href="{{ blog.url }}" class="type--accent link--with-arrow article__pagination-link article__pagination-link--next">
+          {{ 'blogs.article.back_to_blog' | t: title: blog.title }}
+          {% render 'icons', icon: 'arrow', size: '1.2em', class: 'link__arrow space--ml--xsmall' %}
+        </a>
+      </div>
+    {%- else -%}
+      <div class="element--border-top--thick space--pt--medium article__pagination-blog space--mt--medium">
+        <a href="{{ blog.url }}" class="type--accent link--with-arrow article__pagination-link article__pagination-link--next">
+          {{ 'blogs.article.back_to_blog' | t: title: blog.title }}
+          {% render 'icons', icon: 'arrow', size: '1.2em', class: 'link__arrow space--ml--xsmall' %}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+
+  {%- if blog.comments_enabled? -%}
+    {%- render 'article-comments', article: article -%}
+  {%- endif -%}
+</article>
+
+{% schema %}
+{
+  "name": "t:article.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "spacing_top",
+      "default": false,
+      "label": "t:spacing_top.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_bottom",
+      "default": false,
+      "label": "t:spacing_bottom.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "blog_show_breadcrumbs",
+      "default": true,
+      "label": "t:breadcrumbs.show_breadcrumbs.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "blog_show_date",
+      "default": true,
+      "label": "t:article.blocks.title_header.settings.show_date.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "blog_show_author",
+      "default": true,
+      "label": "t:article.blocks.title_header.settings.show_author.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "blog_show_excerpt",
+      "default": true,
+      "label": "t:article.blocks.title_header.settings.show_excerpt.label"
+    },
+    {
+      "type": "select",
+      "id": "image_shape",
+      "options": [
+        {
+          "value": "rectangle",
+          "label": "t:image_shape.option_rectangle"
+        },
+        {
+          "value": "half-arch",
+          "label": "t:image_shape.option_half_arch"
+        }
+      ],
+      "default": "half-arch",
+      "label": "t:image_shape.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "content",
+      "name": "t:article.blocks.content.name",
+      "limit": 1
+    },
+    {
+      "type": "divider",
+      "name": "t:article.blocks.divider.name"
+    },
+    {
+      "type": "products",
+      "name": "t:article.blocks.referenced_products.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "t:article.blocks.referenced_products.paragraph"
+        },
+        {
+          "type": "checkbox",
+          "id": "add_top_margin",
+          "label": "t:article.settings.top_margin.label",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "top_border",
+          "label": "t:article.blocks.referenced_products.settings.top_border.label",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "bottom_border",
+          "label": "t:article.blocks.referenced_products.settings.bottom_border.label",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Referenced products",
+          "label": "t:heading.label"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "large",
+              "label": "t:heading.settings.heading_size.option_large"
+            },
+            {
+              "value": "medium",
+              "label": "t:heading.settings.heading_size.option_medium"
+            },
+            {
+              "value": "small",
+              "label": "t:heading.settings.heading_size.option_small"
+            }
+          ],
+          "default": "medium",
+          "label": "t:heading.settings.heading_size.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_slider_desktop",
+          "default": true,
+          "label": "t:slider.settings.show_slider_desktop.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_slider_mobile",
+          "default": true,
+          "label": "t:slider.settings.show_slider_mobile.label"
+        },
+        {
+          "type": "header",
+          "content": "t:product_card.name"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_price",
+          "default": false,
+          "label": "t:product_card.settings.show_price.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_vendor",
+          "default": false,
+          "label": "t:product_card.settings.show_vendor.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_product_subtitle",
+          "default": false,
+          "label": "t:product_card.settings.show_subtitle.label",
+          "info": "t:product_card.settings.show_subtitle.info"
+        }
+      ]
+    },
+    {
+      "type": "share",
+      "name": "t:share.name",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "t:share.paragraph_featured_image"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:share.paragraph_title_description"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_facebook_share",
+          "label": "t:share.show_facebook.label",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_twitter_share",
+          "label": "t:share.show_twitter.label",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_linkedin_share",
+          "label": "t:share.show_linkedin.label",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_pinterest_share",
+          "label": "t:share.show_pinterest.label",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "add_top_margin",
+          "label": "t:article.settings.top_margin.label",
+          "default": false
+        },
+        {
+          "type": "paragraph",
+          "content": "t:share.paragraph_email_clipboard"
+        }
+      ]
+    },
+    {
+      "type": "tags",
+      "name": "t:article.blocks.tags.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "add_top_margin",
+          "label": "t:article.settings.top_margin.label",
+          "default": false
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

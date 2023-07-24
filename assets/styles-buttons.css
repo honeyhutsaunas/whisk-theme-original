@@ -1,0 +1,349 @@
+button,
+.button,
+[type="button"],
+[type="submit"],
+.shopify-challenge__button,
+#shopify-product-reviews .spr-summary-actions-newreview {
+  --button-background-color: var(--color-primary);
+  --button-background-color-raw: var(--color-primary-raw);
+  --button-foreground-color: var(--color-primary-contrast);
+  --button-foreground-color-raw: var(--color-primary-contrast-raw);
+
+  align-items: center;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: var(--button-background-color);
+  border: var(--border-size--thick) solid transparent;
+  border-radius: var(--border-radius-pill);
+  color: var(--button-foreground-color);
+  cursor: pointer;
+  display: flex;
+  fill: currentColor;
+  font-family: var(--font-button-family);
+  font-size: var(--font-button-size);
+  font-weight: bold;
+  justify-content: center;
+  min-height: var(--pointer-element-min-height);
+  height: auto;
+  letter-spacing: var(--font-button-letter-spacing);
+  line-height: 1.1;
+  padding: var(--space-small) var(--space-large);
+  text-align: center;
+  text-decoration: none;
+  text-transform: var(--font-button-text-transform);
+  transition-duration: var(--transition-duration-long);
+  transition-property: box-shadow, border-color, fill, color;
+  transition-timing-function: var(--transition-timing-function);
+  user-select: none;
+  vertical-align: middle;
+}
+
+button:hover,
+.button:hover,
+[type="button"]:hover,
+[type="submit"]:hover,
+.shopify-payment-button__button--unbranded:hover,
+.shopify-payment-button__button--unbranded:hover:not([disabled]),
+.shopify-challenge__button:hover,
+#shopify-product-reviews .spr-summary-actions-newreview:hover {
+  background-color: var(--button-background-color);
+  border-color: hsla(var(--color-background-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-background-raw), 0.1);
+  color: var(--button-foreground-color);
+  text-decoration: none;
+}
+
+/* Focus styles includes a fallback for browsers that don't support :focus-visible, with JS polyfill */
+button:focus-visible,
+.button:focus-visible,
+[type="button"]:focus-visible,
+[type="submit"]:focus-visible,
+.shopify-payment-button__button--unbranded:focus-visible,
+.shopify-challenge__button:focus-visible,
+#shopify-product-reviews .spr-summary-actions-newreview:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--button-foreground-color),
+    0 0 0 4px hsla(var(--button-background-color-raw), 0.875);
+  color: var(--button-foreground-color);
+  outline: 0;
+}
+
+button:focus-visible:hover,
+.button:focus-visible:hover,
+[type="button"]:focus-visible:hover,
+[type="submit"]:focus-visible:hover,
+.shopify-payment-button__button--unbranded:focus-visible:hover,
+.shopify-challenge__button:focus-visible:hover,
+#shopify-product-reviews .spr-summary-actions-newreview:focus-visible:hover {
+  box-shadow: none;
+  color: var(--button-foreground-color);
+}
+
+button:disabled,
+.button:disabled,
+[type="button"]:disabled,
+[type="submit"]:disabled,
+.shopify-payment-button__button--unbranded:disabled,
+.shopify-challenge__button:disabled,
+#shopify-product-reviews .spr-summary-actions-newreview:disabled,
+button:disabled:hover,
+.button:disabled:hover,
+[type="button"]:disabled:hover,
+[type="submit"]:disabled:hover,
+.shopify-payment-button__button--unbranded:disabled:hover,
+.shopify-challenge__button:disabled:hover,
+#shopify-product-reviews .spr-summary-actions-newreview:disabled:hover {
+  border-color: hsla(var(--color-background-raw), 0.5);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-background-raw), 0.5);
+  color: hsla(var(--button-foreground-color-raw), 0.7);
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+button.loading,
+.button.loading,
+[type="button"].loading,
+[type="submit"].loading {
+  color: transparent;
+}
+
+button.loading::after,
+.button.loading::after,
+[type="button"].loading::after,
+[type="submit"].loading::after {
+  animation: button-loading var(--transition-duration-long) infinite linear;
+  border: 0.25em solid hsla(var(--button-foreground-color-raw), 0.5);
+  border-left: 0.25em solid var(--button-foreground-color);
+  border-radius: 100%;
+  box-sizing: content-box;
+  content: '';
+  display: block;
+  height: 1rem;
+  position: absolute;
+  width: 1rem;
+}
+
+@media (prefers-reduced-motion) {
+  button.loading::after,
+  .button.loading::after,
+  [type="button"].loading::after,
+  [type="submit"].loading::after {
+    animation: none;
+  }
+}
+
+.button--tag,
+.button--radio {
+  font-size: calc(var(--font-button-size) * 0.9);
+  min-height: var(--button-tag-height);
+  padding: 0 var(--space-medium);
+}
+
+.button--tag .button--tag__remove-icon {
+  height: 1em;
+  width: 1em;
+  position: relative;
+  left: 0.4em;
+}
+
+.button--reset {
+  --button-background-color: transparent;
+  --button-foreground-color: var(--color-foreground);
+  --button-foreground-color-raw: var(--color-foreground-raw);
+  color: var(--button-foreground-color);
+  display: inline;
+  min-height: unset;
+}
+
+.button--reset,
+.button--icon {
+  appearance: none;
+  background-color: transparent;
+  border-radius: 0;
+  border: 0;
+  color: var(--button-foreground-color);
+  fill: currentColor;
+  font-size: 1rem;
+  font-weight: normal;
+  font-family: var(--font-body-family);
+  font-size: 1rem;
+  font-style: var(--font-body-style);
+  font-weight: var(--font-body-weight);
+  letter-spacing: 0;
+  height: unset;
+  line-height: var(--font-copy-line-height);
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: hsla(var(--button-foreground-color-raw), 0.3);
+  text-transform: none;
+  text-underline-offset: var(--link-underline-offset);
+  text-decoration-thickness: var(--border-size--thick);
+  transition-duration: var(--transition-duration);
+  transition-property: color, fill, text-decoration;
+  transition-timing-function: var(--transition-timing-function);
+  vertical-align: baseline;
+}
+
+.button--reset:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--color-background),
+    0 0 0 4px hsla(var(--button-foreground-color-raw), 0.4);
+  color: var(--button-foreground-color);
+}
+
+.button--reset:hover {
+  background-color: var(--button-background-color);
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--button-foreground-color);
+  text-decoration-color: transparent;
+}
+
+.button--radio {
+  --button-background-color: transparent;
+  --button-foreground-color: var(--color-foreground);
+  --button-foreground-color-raw: var(--color-foreground-raw);
+  --button-action-color: var(--color-primary);
+  --button-action-color-contrast: var(--color-primary-contrast);
+
+  border: var(--border--thin);
+  font-weight: normal;
+}
+
+.button--radio:hover {
+  border-color: var(--color-primary);
+}
+
+input[type='radio']:checked + .button--radio {
+  background-color: var(--button-action-color);
+  border-color: var(--button-action-color);
+  color: var(--button-action-color-contrast);
+}
+
+.button--swatch {
+  --button-background-color: transparent;
+  --button-action-color: var(--color-primary);
+
+  border: 0;
+  box-shadow: none;
+  display: block;
+  filter: 
+    drop-shadow( 1px  0px 0.25px var(--color-border)) 
+    drop-shadow(-1px  0px 0.25px var(--color-border))
+    drop-shadow( 0px  1px 0.25px var(--color-border)) 
+    drop-shadow( 0px -1px 0.25px var(--color-border));
+  padding: 0;
+  height: var(--swatch-height);
+  width: var(--swatch-width);
+}
+
+.button--swatch:hover {
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+
+  filter: 
+    drop-shadow( 1px  0px 0.25px var(--button-action-color)) 
+    drop-shadow(-1px  0px 0.25px var(--button-action-color))
+    drop-shadow( 0px  1px 0.25px var(--button-action-color)) 
+    drop-shadow( 0px -1px 0.25px var(--button-action-color));
+}
+
+input[type='radio']:checked + .button--swatch {
+  filter: 
+    drop-shadow( 1px  0px 0.25px var(--button-action-color)) 
+    drop-shadow(-1px  0px 0.25px var(--button-action-color))
+    drop-shadow( 0px  1px 0.25px var(--button-action-color)) 
+    drop-shadow( 0px -1px 0.25px var(--button-action-color));
+}
+
+.button--icon {
+  --button-background-color: transparent;
+  --button-foreground-color: var(--color-foreground);
+  --button-foreground-color-raw: var(--color-foreground-raw);
+  align-items: center;
+  color: var(--button-foreground-color);
+  display: flex;
+  justify-content: center;
+  min-height: var(--pointer-element-min-height);
+  min-width: var(--pointer-element-min-height);
+  text-decoration: none;
+}
+
+.button--icon:focus-visible {
+  box-shadow: none;
+  color: hsla(var(--button-foreground-color-raw), 0.85);
+  outline: 2px solid hsla(var(--button-foreground-color-raw), 0.3);
+  outline-offset: 2px;
+}
+
+.button--icon:hover {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: hsla(var(--button-foreground-color-raw), 0.85);
+  text-decoration: none;
+  text-decoration-color: transparent;
+}
+
+.button--icon svg {
+  vertical-align: middle;
+}
+
+.button--slider {
+  background-color: transparent;
+  border-radius: var(--border-radius-square);
+  color: hsla(var(--color-foreground-raw), 0.7);
+  height: var(--slider-button-size);
+  padding: 0;
+  width: var(--slider-button-size);
+  z-index: var(--z-index-slideshow-interaction);
+}
+
+.button--slider:hover {
+  color: var(--color-foreground);
+  background-color: transparent;
+}
+
+.button--slider:focus-visible {
+  box-shadow: none;
+  color: var(--color-foreground);
+  outline: 2px solid hsla(var(--color-foreground-raw), 0.3);
+}
+
+.button--slider:disabled,
+.button--slider:disabled:hover {
+  background-color: transparent;
+  color: hsla(var(--color-foreground-raw), 0.2);
+  opacity: 1;
+}
+
+.button--prev svg {
+  transform: rotate(180deg);
+}
+
+.button--secondary,
+.shopify-payment-button__button--unbranded {
+  --button-background-color: var(--color-secondary);
+  --button-background-color-raw: var(--color-secondary-raw);
+  --button-foreground-color: var(--color-secondary-contrast);
+  --button-foreground-color-raw: var(--color-secondary-contrast-raw);
+}
+
+.button--secondary:hover,
+.shopify-payment-button__button--unbranded:hover {
+  border-color: hsla(var(--color-secondary-contrast-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-secondary-contrast-raw), 0.1);
+}
+
+@keyframes button-loading {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

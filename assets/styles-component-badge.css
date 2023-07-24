@@ -1,0 +1,70 @@
+.badge {
+  --badge-bg-color: var(--color-badge-default);
+
+  display: flex;
+  font-family: var(--font-accent-family);
+  font-size: var(--font-accent-base-size);
+  font-weight: var(--font-accent-weight);
+  letter-spacing: var(--font-accent-letter-spacing);
+  line-height: var(--font-accent-line-height);
+  text-transform: var(--font-accent-text-transform);
+}
+
+.badge--discount {
+  --badge-bg-color: var(--color-discount-bg);
+}
+
+.badge--sale {
+  --badge-bg-color: var(--color-sale-badge-bg);
+  color: var(--color-sale-badge-text);
+}
+
+.badge--sold-out {
+  --badge-bg-color: var(--color-sold-out-badge-bg);
+  color: var(--color-sold-out-badge-text);
+}
+
+.badge--coming-soon {
+  --badge-bg-color: var(--color-coming-soon-badge-bg);
+  color: var(--color-coming-soon-badge-text);
+}
+
+.badge--new {
+  --badge-bg-color: var(--color-new-badge-bg);
+  color: var(--color-new-badge-text);
+}
+
+.badge--floating span {
+  border-bottom-left-radius: var(--border-radius-pill);
+  border-top-left-radius: var(--border-radius-pill);
+}
+
+.badge span {
+  background-color: var(--badge-bg-color);
+  border-bottom-right-radius: var(--border-radius-pill);
+  border-top-right-radius: var(--border-radius-pill);
+  color: inherit;
+  display: inline-block;
+  font-family: var(--font-accent-family);
+  font-size: inherit;
+  font-weight: var(--font-accent-weight);
+  height: 100%;
+  letter-spacing: var(--font-accent-letter-spacing);
+  line-height: var(--font-accent-line-height);
+  padding: 0.6em 1.2em 0.5em;
+  text-transform: var(--font-accent-text-transform);
+}
+
+.theme-style--sharp .badge span {
+  padding: 0.6em 0.3em 0.5em 1.2em;
+}
+
+.theme-style--sharp .badge::after {
+  display: inline-block;
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 2.3em 1.5em 0 0;
+  border-color: var(--badge-bg-color) transparent transparent transparent;
+}

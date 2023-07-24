@@ -1,0 +1,31 @@
+{% comment %}
+    Renders the content from a detail tab on the PDP
+
+    Accepts:
+    - content: {String} Detail tab content.
+    - image: {Image} Detail tab image.
+    - image_max_width: {Integer} Maximum width of the image.
+    - page_content: {String} Detail tab page content.
+    - product_description: {String} Product description.
+    - show_image_first: {Boolean} If there is an image, show it above any text content
+
+    Usage:
+    {%- render 'product-detail-tab-content', content: block.settings.content, image: block.settings.image, image_max_width: block.settings.image_max_width, show_image_first: block.settings.show_image_first -%}
+{% endcomment %}
+
+<div class="main-product__tab-content {% if show_image_first and image %}main-product__tab-content--image-first{% endif %}">
+  <div>
+    {%- if product_description -%}
+      <div>
+        {{ product_description }}
+      </div>
+    {%- endif -%}
+    {{ content }}
+    {{ page_content }}
+  </div>
+
+  {%- if image -%}
+    {%- assign image_style = 'max-width: ' | append: image_max_width | append: 'px;' -%}
+    {{ image | image_url: width: image.width | image_tag: class: 'main-product__tab-image', style: image_style, alt: image.alt, loading: 'lazy' }}
+  {%- endif -%}
+</div>

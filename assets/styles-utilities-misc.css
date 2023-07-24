@@ -1,0 +1,404 @@
+/* misc */
+.placeholder-svg {
+  background: var(--color-image-placeholder);
+  color: hsla(var(--color-foreground-raw), 0.7);
+  fill: currentColor;
+}
+
+.social-list {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* content box */
+.content-box--text-align-left {
+  text-align: left;
+}
+
+.content-box--text-align-center {
+  text-align: center;
+}
+
+.content-box--text-align-right {
+  text-align: right;
+}
+
+.content-box--text-align-center .rte,
+.content-box--text-align-center .container--copy-max-width {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.content-box--text-align-left .content-box__buttons {
+  justify-content: start;
+  text-align: left;
+}
+
+.content-box--text-align-center .content-box__buttons {
+  justify-content: center;
+}
+
+.content-box--text-align-right .content-box__buttons {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.content-box__buttons {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: var(--space-small);
+  width: 100%;
+}
+
+.content-box__buttons--background-video {
+  flex-direction: row;
+}
+
+@media screen and (max-width: 899px) {
+  .content-box--text-align-center--medium-down {
+    text-align: center;
+  }
+
+  .content-box--text-align-center--medium-down .rte {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .content-box--text-align-center--medium-down .content-box__buttons {
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 599px) {
+  .content-box--text-align-left--mobile {
+    text-align: left;
+  }
+
+  .content-box--text-align-center--mobile {
+    text-align: center;
+  }
+
+  .content-box--text-align-right--mobile {
+    text-align: right;
+  }
+
+  .content-box--text-align-center--mobile .rte {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .content-box--text-align-center--mobile .content-box__buttons {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .content-box--text-align-left--mobile .content-box__buttons {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .content-box--text-align-right--mobile .content-box__buttons {
+    justify-content: flex-end;
+    text-align: right;
+  }
+}
+
+@media screen and (min-width: 550px) {
+  .content-box__buttons {
+    flex-direction: row;
+  }
+
+  .content-box__buttons .button {
+    width: unset;
+  }
+}
+
+/* icons */
+.icon--arrow-back {
+  transform: rotate(180deg);
+}
+
+.icon--to-open {
+  transition: transform var(--transition-duration) var(--transition-timing-function);
+}
+
+[open] > .icon--to-open,
+[open] > summary > .icon--to-open {
+  transform: rotate(-45deg);
+}
+
+.icon--to-open--caret {
+  transform: rotate(90deg);
+}
+
+[open] > .icon--to-open--caret,
+[open] > summary > .icon--to-open--caret {
+  transform: rotate(-90deg);
+}
+
+@media (prefers-reduced-motion) {
+  .motion-reduce {
+    transition: none !important;
+  }
+}
+
+.overflow--hidden {
+  overflow: hidden;
+}
+
+.skip-to-content-link {
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: var(--space-small) var(--space-large);
+  position: absolute !important;
+  width: 1px;
+  word-wrap: normal !important;
+}
+
+.skip-to-content-link:focus {
+  background-color: var(--button-background-color);
+  box-shadow: var(--box-shadow--all-sides);
+  clip: auto;
+  height: auto;
+  margin-left: var(--space-viewport-sides);
+  margin-top: var(--space-medium);
+  overflow: auto;
+  position: inherit;
+  width: auto;
+  z-index: var(--z-index-skip-to-content-link);
+}
+
+.shopify-challenge__container {
+  margin: var(--space-large) auto;
+}
+
+.article__meta-info {
+  font-size: var(--font-copy-size-small);
+}
+
+.article__meta-info + .article__meta-info::before {
+  content: "•";
+  margin-left: var(--space-xsmall);
+  margin-right: var(--space-xsmall);
+}
+
+/* Deferred media & videos */
+.deferred-media,
+.background-video__container {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+
+.deferred-media--product-model {
+  padding-top: var(--product-image-aspect-ratio-fallback-padding-top);
+}
+
+/* Fallback for browsers that don't support aspect ratio */
+.deferred-media,
+.background-video__container {
+  padding-top: 56.25%; /* 16:9 default aspect-ratio, can be overridden inline */
+}
+
+.deferred-media--product-model {
+  padding-top: var(--product-image-aspect-ratio-fallback-padding-top);
+}
+
+@supports (aspect-ratio: 1) {
+  .deferred-media,
+  .deferred-media iframe,
+  .deferred-media video,
+  .deferred-media__poster,
+  .background-video__container video,
+  .background-video__container iframe {
+    aspect-ratio: 16 / 9; /* default aspect-ratio, can be overridden inline */
+    padding-top: 0;
+  }
+
+  .deferred-media--product-model {
+    aspect-ratio: var(--product-image-aspect-ratio);
+    padding-top: 0;
+  } 
+}
+
+.deferred-media[loaded="true"] .deferred-media__poster,
+.deferred-media[loaded="true"] .shopify-model-viewer-ui__button--poster {
+  display: none;
+}
+
+.deferred-media iframe,
+.deferred-media__poster,
+.deferred-media__cover-image,
+.deferred-media__hosted-video,
+.deferred-media video,
+.background-video__container video,
+.background-video__container iframe {
+  top: 0;
+  height: 100%;
+  position: absolute;
+}
+
+.deferred-media iframe,
+.deferred-media__poster,
+.deferred-media__cover-image,
+.deferred-media__hosted-video,
+.deferred-media video {
+  width: 100%;
+}
+
+.deferred-media model-viewer {
+  display: block;
+  max-width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.deferred-media__poster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.deferred-media__poster:focus-visible .deferred-media__poster-button {
+  outline: 2px solid var(--color-foreground);
+}
+
+.deferred-media__cover-image {
+  display: flex;
+  left: 0;
+  object-fit: cover;
+}
+
+.deferred-media__poster-button {
+  align-items: center;
+  background-color: hsla(var(--color-background-raw), 0.75);
+  border-radius: 50%;
+  display: flex;
+  height: 4rem;
+  justify-content: center;
+  position: absolute;
+  transition: background var(--transition-duration) var(--transition-timing-function);
+  width: 4rem;
+}
+
+.deferred-media__poster-icon {
+  color: var(--color-foreground);
+  height: 2.5rem;
+  width: 2.5rem;
+}
+
+.deferred-media__poster:hover .deferred-media__poster-button {
+  background-color: var(--color-background);
+  box-shadow:  var(--box-shadow--all-sides-small)
+}
+
+.deferred-media__preview-image-link {
+  display: flex;
+  justify-content: center;
+}
+
+/* Image containers */
+.image-container {
+  background: var(--color-image-placeholder);
+  position: relative;
+}
+
+/* Fallback for browsers that don't support aspect ratio */
+.image-container--product {
+	height: 0;
+	overflow: hidden;
+	position: relative;
+  padding-top: var(--product-image-aspect-ratio-fallback-padding-top);
+}
+
+.image-container--article {
+  height: 0;
+	overflow: hidden;
+	position: relative;
+  padding-top: 66.66%;
+}
+
+@supports (aspect-ratio: 1) {
+  .image-container--product {
+    aspect-ratio: var(--product-image-aspect-ratio);
+    height: unset;
+    overflow: unset;
+    padding-top: 0;
+  }
+
+  .image-container--article {
+    aspect-ratio: 3 / 2;
+    height: unset;
+    overflow: unset;
+    padding-top: 0;
+  }
+}
+
+.image-container--no-bg {
+  background: transparent;
+}
+
+.object-fit__image--cover {
+  display: block;
+  height: 100%;
+  left: 0;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+/* Comma list */
+.comma-list li:not(:last-of-type)::after {
+  content: ",";
+}
+
+.comma-list a {
+  text-decoration-color: transparent;
+}
+
+.comma-list a:hover {
+  text-decoration-color: hsla(var(--color-link-raw), 0.3);
+}
+
+.comma-list li.active a {
+  font-weight: bold;
+  text-decoration-color: hsla(var(--color-link-raw), 0.3);
+}
+
+.comma-list li.active a:hover {
+  font-weight: bold;
+  text-decoration-color: transparent;
+}
+
+#g-recaptcha {
+  margin-bottom: var(--space-medium);
+  margin-top: var(--space-medium);
+}
+
+.social-share__success-message {
+  background-color: var(--color-background);
+  border: var(--border--thin);
+  margin-top: var(--space-xsmall);
+  margin-right: var(--space-xsmall);
+  padding: var(--space-xsmall);
+  position: absolute;
+  line-height: var(--font-heading-line-height);
+  z-index: var(--z-index-overlay);
+}
+
+  /* Bug fix for Safari 14 and earlier */ 
+@supports not (aspect-ratio: 1) {
+  cart-note .accordion .icon--to-open {
+    top: unset;
+  }
+}

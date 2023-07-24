@@ -1,0 +1,23 @@
+.announcement-bar {
+  position: relative;
+  text-align: center;
+  z-index: var(--z-index-site-header);
+}
+
+.announcement-bar .announcement-bar__link:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--box-shadow-color);
+  outline: 0;
+  outline-offset: 1px;
+  position: relative;
+  text-decoration: none;
+  z-index: var(--z-index-announcement-bar);
+}
+
+.announcement-bar.element--edge-small-zig-zag-bottom {
+  --underneath-color: var(--color-site-header-bg);
+}
+
+.announcement-bar__slide {
+  height: 100%;
+  padding: 0.5rem var(--space-viewport-sides);
+}

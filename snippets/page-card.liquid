@@ -1,0 +1,12 @@
+<a href="{{ page.url }}" class="page-card link--no-underline">
+  {%- if in_search_results -%}
+    <div class="badge badge--floating">
+      <span>
+        {{ 'search.page' | t }}
+      </span>
+    </div>
+  {%- endif -%}
+  <h2 class="type--heading title--small">
+    {{ page.title | truncate: 50 | escape }}
+  </h2>
+</a>

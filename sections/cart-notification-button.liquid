@@ -1,0 +1,11 @@
+{%- liquid
+  if settings.cart_icon == "icon_cart"
+    assign view_cart = 'cart.view_cart' | t: count: cart.item_count
+  elsif settings.cart_icon == "icon_bag"
+    assign view_cart = 'cart.view_bag' | t: count: cart.item_count
+  else
+    assign view_cart = 'cart.view_basket' | t: count: cart.item_count
+  endif
+-%}
+
+{{ view_cart }}

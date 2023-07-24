@@ -1,0 +1,59 @@
+{% comment %}
+    Renders a newsletter form
+
+    Accepts:
+    - class: {String} Class name for custom styling
+    - section_id: {String} Section ID (required)
+
+    Usage:
+    {% render 'newsletter-form', section_id: section.id, class: 'align--block-center' %}
+{% endcomment %}
+
+{%- liquid
+  assign newsletter_form_id = 'Contact-' | append: section_id
+  assign newsletter_form_classes = 'newsletter-form container--form-max-width ' | append: class
+-%}
+
+{%- form 'customer', id: newsletter_form_id, class: newsletter_form_classes -%}
+  <div class="newsletter-form__input-wrapper">
+    <label class="display--hidden" for="NewsletterForm--{{ section_id }}">
+      {{ 'newsletter.label' | t }}
+    </label>
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    <input
+      id="NewsletterForm--{{ section_id }}"
+      type="email"
+      name="contact[email]"
+      class="newsletter-form__input"
+      value="{{ form.email }}"
+      aria-required="true"
+      autocorrect="off"
+      autocapitalize="off"
+      autocomplete="email"
+      {% if form.errors %}
+        autofocus
+        aria-invalid="true"
+        aria-describedby="{{ newsletter_form_id }}-error"
+      {% elsif form.posted_successfully? %}
+        aria-describedby="{{ newsletter_form_id }}-success"
+      {% endif %}
+      placeholder="{{ 'newsletter.placeholder' | t }}"
+      required
+    >
+    <button type="submit" name="commit" id="Subscribe-{{ section_id }}" class="button--icon newsletter-form__button" aria-label="{{ 'newsletter.button_label' | t }}">
+      {%- render 'icons', icon: 'mail', class: 'newsletter-form__icon' -%}
+    </button>
+  </div>
+  {%- if form.errors -%}
+    <div id="{{ newsletter_form_id }}-error" class="form-message space--pt--xsmall flex flex--align-center">
+      {% render 'icons', icon: 'error', class: 'form-message__icon space--mr--xsmall' %}
+      {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}
+    </div>
+  {%- endif -%}
+  {%- if form.posted_successfully? -%}
+    <div class="form-message space--pt--xsmall flex flex--align-center">
+      {% render 'icons', icon: 'success', class: 'form-message__icon space--mr--xsmall' %}
+      {{ settings.newsletter_success_message }}
+    </div>
+  {%- endif -%}
+{%- endform -%}

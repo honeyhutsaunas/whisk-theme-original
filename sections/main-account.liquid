@@ -1,0 +1,250 @@
+{{ 'styles-component-tab-nav.css' | asset_url | stylesheet_tag }}
+{{ 'styles-component-orders.css' | asset_url | stylesheet_tag }}
+
+<div class="container--page container--large space--mv--xlarge">
+  {%- render 'customer-nav' -%}
+  <div>
+    {% paginate customer.orders by 12 %}
+      {%- if customer.orders.size > 0 -%}
+        <table role="table" class="order-table element--border--thick space--mv--large">
+          <caption class="display--hidden">{{ 'customer.orders.title' | t }}</caption>
+          <thead role="rowgroup">
+            <tr class="type--accent" role="row">
+              <th id="ColumnOrder" scope="col" role="columnheader">{{ 'customer.orders.order_number' | t }}</th>
+              <th id="ColumnDate" scope="col" role="columnheader">{{ 'customer.orders.date' | t }}</th>
+              <th id="ColumnPayment" scope="col" role="columnheader">{{ 'customer.orders.payment_status' | t }}</th>
+              <th id="ColumnFulfillment" scope="col" role="columnheader">{{ 'customer.orders.fulfillment_status' | t }}</th>
+              <th id="ColumnTotal" scope="col" role="columnheader" class="align--text-right">{{ 'customer.orders.total' | t }}</th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup" class="element--border-top--thick">
+            {%- for order in customer.orders -%}
+              <tr role="row">
+                <td
+                  id="RowOrder"
+                  role="cell"
+                  headers="ColumnOrder"
+                  data-label="{{ 'customer.orders.order_number' | t }}"
+                >
+                  <a href="{{ order.customer_url }}" aria-label="{{ 'customer.orders.order_number_link' | t: number: order.name }}" class="link--no-underline">
+                    {{ order.name }}
+                  </a>
+                </td>
+                <td headers="RowOrder ColumnDate" role="cell" data-label="{{ 'customer.orders.date' | t }}">
+                  {{ order.created_at | time_tag: format: settings.date_format }}
+                </td>
+                <td headers="RowOrder ColumnPayment" role="cell" data-label="{{ 'customer.orders.payment_status' | t }}">
+                  {{ order.financial_status_label }}
+                </td>
+                <td headers="RowOrder ColumnFulfillment" role="cell" data-label="{{ 'customer.orders.fulfillment_status' | t }}">
+                  {{ order.fulfillment_status_label }}
+                </td>
+                <td headers="RowOrder ColumnTotal" role="cell" data-label="{{ 'customer.orders.total' | t }}" class="align--text-right">
+                  {{ order.total_price | money_with_currency }}</td>
+              </tr>
+              <tr class="element--border-bottom--thin" role="row">
+                <td colspan="5" role="cell" headers="RowOrder" class="order-table__toggle">
+                  <details id="Order-{{ order.name }}">
+                    <summary class="flex flex--align-center link--no-underline">
+                      <span class="copy--bold">
+                        {{ 'customer.orders.items_from_order' | t: number: order.name }}
+                      </span>
+                      <span class="icon--to-open icon--to-open--caret space--ml--xsmall motion-reduce">
+                        {%- render 'icons', icon: 'caret', size: '1rem' -%}
+                      </span>
+                    </summary>
+                    <div class="space--ph--small space--mv--medium color--bg-default">
+                      <ul class="element--border-top--thin element--border-bottom--thin list--unstyled">
+                        {% for line_item in order.line_items %}
+                          {%- liquid
+                            if line_item.image
+                              assign product_image = line_item.image
+                            else
+                              assign product_image = false
+                            endif
+
+                            assign product_image_width = 200
+                            assign product_image_height = product_image_width | divided_by: settings.product_image_ratio
+                          -%}
+                          <li class="line-item {% if product_image %}line-item--with-image{% endif %}">
+                            {% if product_image %}
+                              {%- assign image_alt = product_image.alt | escape -%}
+                              <a class="line-item__image image-container image-container--product display--block fade-in-image" href="{{ line_item.product.url | default: '#' }}" tabindex="-1" aria-hidden="true">
+                                {{ product_image | image_url: width: product_image_width, height: product_image_height | image_tag: class: 'object-fit__image--cover', alt: image_alt, loading: 'lazy' }}
+                              </a>
+                            {% endif %}
+
+                            <div class="line-item__info">
+                              <a href="{{ line_item.product.url }}" class="line-item__title line-item__title--large space--mb--xsmall link--no-underline type--hyphenate">
+                                {{ line_item.product.title }}
+                              </a>
+                              {%- if settings.cart_show_vendor -%}
+                                <span class="type--accent display--block space--mb--xsmall type--hyphenate">
+                                  {{ line_item.vendor }}
+                                </span>
+                              {% endif %}
+
+                              {%- if line_item.product.has_only_default_variant == false or line_item.properties.size != 0 or line_item.selling_plan_allocation != nil -%}
+                                <dl class="copy--small">
+                                  {%- if line_item.product.has_only_default_variant == false -%}
+                                    {%- for option in line_item.options_with_values -%}
+                                      <div>
+                                        <dt class="display--inline">{{ option.name }}:</dt>
+                                        <dd class="display--inline">{{ option.value }}</dd>
+                                      </div>
+                                    {%- endfor -%}
+                                  {%- endif -%}
+                                  {%- for property in line_item.properties -%}
+                                    {%- assign property_first_char = property.first | slice: 0 -%}
+                                    {%- if property.last != blank and property_first_char != '_' -%}
+                                      <div>
+                                        <dt class="display--inline">{{ property.first }}:</dt>
+                                        <dd class="display--inline">
+                                          {%- if property.last contains '/uploads/' -%}
+                                            <a href="{{ property.last }}" target="_blank">
+                                              {{ property.last | split: '/' | last }}
+                                            </a>
+                                          {%- else -%}
+                                            {{ property.last }}
+                                          {%- endif -%}
+                                        </dd>
+                                      </div>
+                                    {%- endif -%}
+                                  {%- endfor -%}
+                                </dl>
+
+                                <p class="copy--small">
+                                  {{ line_item.selling_plan_allocation.selling_plan.name }}
+                                </p>
+                              {%- endif -%}
+
+                              <ul class="list--unstyled copy--small" aria-label="{{ 'customer.order.discount' | t }}">
+                                {%- for discount in line_item.discounts -%}
+                                  <li>
+                                    {{ discount.title }}
+                                  </li>
+                                {%- endfor -%}
+                              </ul>
+
+                              {%- if settings.product_quick_add_enabled -%}
+                                <div class="space--mt--small">
+                                  {% if line_item.product.available and line_item.variant.id %}
+                                    <product-form>
+                                      {%- form 'product', line_item.product, id: line_item.product.id, class: '', novalidate: 'novalidate', data-type: 'add-to-cart-form', data-form-id: line_item.product.id -%}
+                                        <input type="hidden" name="id" value="{{ line_item.variant.id }}" />
+                                        <input min="1" type="number" id="quantity" name="quantity" value="1" class="display--hidden" />
+                                        <button type="submit" class="button--tag button--primary">
+                                        {{ 'customer.order.reorder' | t }}
+                                        </button>
+                                        <div data-error-message-wrapper role="alert" hidden>
+                                          <div class="flex flex--align-center space--mb--small">
+                                            {%- render 'icons', icon: 'error', class: 'form-message__icon space--mr--xsmall' -%}
+                                            <span data-error-message class="form-message"></span>
+                                          </div>
+                                        </div>
+                                      {%- endform -%}
+                                    </product-form>
+                                  {% endif %}
+                                </div>
+                              {%- endif -%}
+                            </div>
+
+                            <div class="line-item__quantity">
+                              <p class="copy--small">
+                                {{ line_item.quantity }} x {{ line_item.line_price | divided_by: line_item.quantity | money }}
+                              </p>
+
+                              {%- if line_item.unit_price_measurement -%}
+                                <div class="copy--small">
+                                  <span class="display--hidden">{{ 'products.product.price.unit_price' | t }}</span>
+                                  {{ line_item.variant.unit_price | money }}
+                                  <span aria-hidden="true">/</span>
+                                  <span class="display--hidden">&nbsp;{{ 'accessibility.unit_price_separator' | t }}&nbsp;</span>
+                                  {%- if line_item.variant.unit_price_measurement.reference_value != 1 -%}
+                                    {{- line_item.variant.unit_price_measurement.reference_value -}}
+                                  {%- endif -%}
+                                  {{ line_item.variant.unit_price_measurement.reference_unit }}
+                                </div>
+                              {%- endif -%}
+                            </div>
+
+                            <div class="line-item__price align--text-right">
+                              {%- if line_item.original_line_price != line_item.final_line_price -%}
+                                <dl>
+                                  <dt class="display--hidden">{{ 'products.product.price.sale_price' | t }}</dt>
+                                  <dd>
+                                    {{ line_item.final_line_price | money }}
+                                  </dd>
+                                </dl>
+                              {%- else -%}
+                                <span>
+                                  {{ line_item.original_line_price | money }}
+                                </span>
+                              {%- endif -%}
+                            </div>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                      <a href="{{ order.customer_url }}" aria-label="{{ 'customer.orders.order_number_link' | t: number: order.name }}" class="button button--secondary space--mt--large element--max-content-width align--block-center">
+                        {{ 'customer.orders.view_invoice' | t }}
+                      </a>
+                    </div>
+                  </details>
+                </td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+
+      {%- else -%}
+        <p>{{ 'customer.orders.none' | t }}</p>
+      {%- endif -%}
+
+      {%- if paginate.pages > 1 -%}
+        {%- if paginate.parts.size > 0 -%}
+          <nav class="pagination copy--small copy--bold align--text-center space--mt--large" role="navigation" aria-label="{{ 'pagination.label' | t }}">
+            <ul class="flex flex--align-baseline--justify-center list--unstyled">
+            {%- if paginate.previous -%}
+              <li class="space--mh--small flex flex--align-baseline">
+                <a href="{{ paginate.previous.url }}" class="pagination__link pagination__link--previous type--accent" tabindex="-1">
+                  {% render 'icons', icon: 'arrow', size: '1.2em', class: 'pagination__arrow--previous space--mr--xsmall' %}
+                  {{ 'pagination.previous' | t }}
+                </a>
+              </li>
+            {%- endif -%}
+
+            {%- for part in paginate.parts -%}
+              <li class="space--mh--small">
+                {%- if part.is_link -%}
+                  <a href="{{ part.url }}" class="pagination__link link--no-underline" aria-label="{{ 'pagination.page' | t: number: part.title }}">
+                    {{ part.title }}
+                  </a>
+                {%- else -%}
+                  {%- if part.title == paginate.current_page -%}
+                    <span class="pagination__link pagination__link--current" aria-current="page" aria-label="{{ 'pagination.page' | t: number: part.title }}">
+                      {{ part.title }}
+                    </span>
+                  {%- else -%}
+                    <span class="pagination__item">
+                      {{ part.title }}
+                    </span>
+                  {%- endif -%}
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+
+            {%- if paginate.next -%}
+              <li class="space--mh--small flex flex--align-baseline">
+                <a href="{{ paginate.next.url }}" class="pagination__link pagination__link--next type--accent">
+                  {{ 'pagination.next' | t }}
+                  {% render 'icons', icon: 'arrow', size: '1.2em', class: 'pagination__arrow--next space--ml--xsmall' %}
+                </a>
+              </li>
+            {%- endif -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+      {%- endif -%}
+    {% endpaginate %}
+  </div>
+</div>

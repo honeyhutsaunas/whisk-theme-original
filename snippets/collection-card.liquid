@@ -1,0 +1,115 @@
+{% comment %}
+    Renders a collection card
+
+    Accepts:
+    - card_style: {String} The style of the card. (required)
+    - collection: {Object) Collection Liquid object (required)
+    - collection_image: {String} Which image to use for the collection (required)
+    - first_section: {Boolean} If the card is the first section of the page
+    - image_sizes: {String} sizes attribute to make the image responsive (default: '50vw')
+    - overlay_color: {String} The color of the overlay when image is set to full background. (required)
+    - overlay_opacity: {String} The opacity of the overlay when image is set to full background. (required)
+    - overlay_text_color: {String} The color of the text when image is set to full background. (required)
+    - section_id: {String} The id of the section to which the collection belongs. (required)
+    - show_item_count: {Boolean} Show number of items in a collection
+    - title_size: {String} The font size of the title.
+
+    Usage:
+    {%- render 'collection-card',
+      card_style: section.settings.card_style,
+      collection: collection,
+      collection_image: section.settings.collection_image,
+      image_sizes: '100vw',
+      overlay_color: section.settings.overlay_color,
+      overlay_opacity: section.settings.overlay_opacity,
+      overlay_text_color: section.settings.overlay_text_color,
+      show_item_count: section.settings.show_item_count,
+      section_id: section.id,
+      title_size: section.settings.title_size
+     -%}
+{% endcomment %}
+
+{%- liquid
+  if card_style == 'no-image'
+    assign card_image = false
+  elsif collection_image == 'custom-image'
+    if collection.metafields.custom.collection_card_image
+      assign card_image = collection.metafields.custom.collection_card_image
+    elsif collection.featured_image
+      assign card_image = collection.featured_image
+    endif
+  elsif collection_image == 'featured-image'
+    assign card_image = collection.featured_image
+  elsif collection_image == 'first-product-image'
+    if collection.products.first.featured_image
+      assign card_image = collection.products.first.featured_image
+    else
+      assign card_image = collection.featured_image
+    endif
+    if settings.product_image_rounded_corners
+      assign round_image_corners = true
+    endif
+  else
+    assign card_image = false
+  endif
+
+  assign overlay_opacity = overlay_opacity | times: 0.01
+
+  if image_sizes
+    assign image_sizes = image_sizes
+  else
+    assign image_sizes = '50vw'
+  endif
+
+  if first_section
+    assign image_loading = 'eager'
+  else
+    assign image_loading = 'lazy'
+  endif
+-%}
+
+<div class="collection-card collection-card--{{ section_id }} collection-card--{{ card_style }}">
+  {% if collection.all_products_count > 0 %}
+
+    <a href="{{ collection.url }}" class="collection-card__container collection-card__container--link">
+  {% else %}
+    <div class="collection-card__container">
+  {% endif %}
+    {%- if card_image -%}
+      <div class="collection-card__image-container {% if round_image_corners %}collection-card__image-container--rounded{% endif %} fade-in-image">
+        {{ card_image | image_url: width: 2000 | image_tag:
+          loading: image_loading,
+          sizes: image_sizes,
+          widths: '375, 550, 720, 990, 1200, 1500, 2000',
+          class: 'object-fit__image--cover'
+        }}
+      </div>
+    {%- elsif card_style == 'background-image' -%}
+      <div class="collection-card__image-container fade-in-image">
+      </div>
+    {%- endif -%}
+    <div
+      class="collection-card__content {% unless card_image %}grid__item--span-2-columns space--ph--small{% endunless %}"
+      {% if card_style == 'background-image' %}style=" background: linear-gradient(10deg, {{ overlay_color | color_modify: 'alpha', overlay_opacity }} 0%, {{ overlay_color | color_modify: 'alpha', 0 }} 90%); color: {{ overlay_text_color }};"{% endif %}
+    >
+      <div class="collection-card__copy collection-card__copy--{{ title_size }}">
+        <h3 class="collection-card__title type--heading type--hyphenate link--no-underline">
+          {%- if collection == blank -%}
+            {{ 'onboarding.collection_title' | t }}
+          {%- else -%}
+            {{ collection.title }}
+          {%- endif -%}
+        </h3>
+        {%- if collection != blank and show_item_count -%}
+          <span class="collection-card__item-count copy--default display--block">
+            {{ 'collection.item_count' | t: count: collection.all_products_count }}
+          </span>
+        {%- endif -%}
+      </div>
+    </div>
+  {% if collection.all_products_count > 0 %}
+    </a>
+  {% else %}
+    </div>
+  {% endif %}
+</div>

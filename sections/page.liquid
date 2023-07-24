@@ -1,0 +1,73 @@
+<div class="container--page {% if section.settings.spacing_top %}space--mt--xlarge{% endif %} {% if section.settings.spacing_bottom %}space--mb--xlarge{% endif %}">
+  {%- unless section.settings.page.title == blank or section.settings.show_page_title == false -%}
+    <h2 class="type--heading title--{{ section.settings.heading_size }} align--text-center space--mb--large">
+      {{ section.settings.page.title | escape }}
+    </h2>
+  {%- endunless -%}
+  <div class="rte container--copy-max-width align--block-center">
+    {%- if section.settings.page.content != blank -%}
+      {{ section.settings.page.content }}
+    {%- else -%}
+      <div>
+        {{ 'page' | placeholder_svg_tag: 'page-placeholder' }}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:page.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "spacing_top",
+      "default": true,
+      "label": "t:spacing_top.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_bottom",
+      "default": true,
+      "label": "t:spacing_bottom.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_page_title",
+      "default": true,
+      "label": "t:page.settings.show_page_title.label"
+    },
+    {
+      "type": "page",
+      "id": "page",
+      "label": "t:page.settings.page.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "large",
+          "label": "t:heading.settings.heading_size.option_large"
+        },
+        {
+          "value": "medium",
+          "label": "t:heading.settings.heading_size.option_medium"
+        },
+        {
+          "value": "small",
+          "label": "t:heading.settings.heading_size.option_small"
+        }
+      ],
+      "default": "medium",
+      "label": "t:page.settings.page_title_size.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:page.name"
+    }
+  ]
+}
+{% endschema %}

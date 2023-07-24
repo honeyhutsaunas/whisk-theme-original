@@ -1,0 +1,39 @@
+/* containers */
+.container--page {
+  max-width: var(--page-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-viewport-sides);
+  padding-right: var(--space-viewport-sides);
+  width: 100%;
+}
+
+.container--flush {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.container--align-left {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.container--large {
+  max-width: var(--container-width-large);
+}
+
+.container--medium {
+  max-width: var(--container-width-medium);
+}
+
+.container--small {
+  max-width: var(--container-width-small);
+}
+
+.container--copy-max-width {
+  max-width: var(--container-max-width-copy);
+}
+
+.container--form-max-width {
+  max-width: var(--container-width-form);
+}

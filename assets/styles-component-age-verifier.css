@@ -1,0 +1,78 @@
+.age-verifier {
+  background-color: var(--color-background);
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition-duration: var(--transition-duration-long);
+  transition-property: opacity, visibility;
+  transition-timing-function: var(--transition-timing-function);
+  visibility: hidden;
+  z-index: var(--z-index-age-verifier);
+}
+
+.age-verifier:focus-visible {
+  outline: none;
+}
+
+.age-verifier__background-image {
+  z-index: calc(var(--z-index-age-verifier) + 1);
+}
+
+.age-verifier__content {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.age-verifier__box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+  max-width: var(--container-width-medium);
+  margin: var(--space-viewport-sides);
+  padding: var(--space-large);
+  position: relative;
+  text-align: center;
+  transition-duration: var(--transition-duration-long);
+  transition-property: transform;
+  transition-timing-function: var(--transition-timing-function);
+  transform: translateY(100vh);
+  z-index: calc(var(--z-index-age-verifier) + 2);
+}
+
+.age-verifier.animate-in {
+  opacity: 1;
+  visibility: visible;
+}
+
+.age-verifier.animate-in .age-verifier__box {
+  transform: translateY(0);
+  transition-delay: var(--transition-duration-long);
+}
+
+/* Only show age verifier in the editor when it's selected */
+html.shopify-design-mode.age-verifier-open:not(.popup-open) {
+  overflow: unset;
+}
+
+html.shopify-design-mode .age-verifier {
+  display: none;
+}
+
+html.shopify-design-mode.age-verifier-open .age-verifier.open-in-editor {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+html.shopify-design-mode.age-verifier-open .age-verifier.open-in-editor .age-verifier__box {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: var(--transition-duration-long);
+  visibility: visible;
+}

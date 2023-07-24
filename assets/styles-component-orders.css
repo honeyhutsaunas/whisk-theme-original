@@ -1,0 +1,34 @@
+@media screen and (max-width: 767px) {
+  .order-table th {
+    display: none;
+  }
+
+  .order-table td {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .order-table td::before {
+    content: attr(data-label);
+    font-family: var(--font-accent-family);
+    font-size: var(--font-accent-base-size);
+    font-weight: var(--font-accent-weight);
+    letter-spacing: var(--font-accent-letter-spacing);
+    line-height: var(--font-accent-line-height);
+    text-align: left;
+    text-transform: var(--font-accent-text-transform);
+  }
+
+  .order-table .order-table__toggle {
+    display: block;
+  }
+
+  .order-table .order-table__toggle::before {
+    content: none;
+  }
+
+  .order-table td.order-table__desktop-title {
+    display: none;
+  }
+}

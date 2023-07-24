@@ -1,0 +1,77 @@
+{% comment %}
+    Renders buy buttons in a product template
+
+    Accepts:
+    - add_to_cart_label: {String} Label for the add to cart button based on what cart name is chosen in the store settings.
+    - form: {Object} Form object.
+    - gift_card_recipient_feature_active: {Boolean} Whether the gift card recipient feature is active.
+    - product: {Object} Product Liquid object
+    - product_available: {Boolean} Whether the product is available for purchase.
+    - product_form_id: {String} The unique id of the product form to connect the the buy buttons to the other form elements on the page.
+    - section_id: {String} Section id.
+    - show_dynamic_checkout: {Boolean} Displays dynamic checkout buttons for Shop Pay, Amazon Pay, etc.
+    - show_pickup: Show options for pickup in store if enabled in the store settings.
+
+    Usage:
+    {%- render 'product-buy-buttons', product: product, product_form_id: product_form_id, section_id: section.id, show_dynamic_checkout: block.settings.show_dynamic_checkout, show_pickup: section.settings.show_pickup -%}
+{% endcomment %}
+
+<input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+<div data-error-message-wrapper role="alert" hidden class="space--mb--small">
+  {%- render 'icons', icon: 'error', class: 'form-message__icon space--mr--xsmall' -%}
+  <span data-error-message class="form-message"></span>
+</div>
+<div>
+  <label class="space--mb--xsmall" for="Quantity-{{ section_id }}">
+    {{ 'products.product.quantity.label' | t }}
+  </label>
+  <div class="featured-product__add-to-cart-container">
+    <quantity-input class="quantity-selector element--full-width quantity-selector--auto-width">
+      <button class="quantity-selector__button" name="minus" type="button" {% unless product_available %} disabled{% endunless %} data-quantity-action-element>
+        <span class="display--hidden">
+          {{ 'products.product.quantity.decrease' | t: product: product.title | escape }}
+        </span>
+        {%- render 'icons', icon: 'minus' -%}
+      </button>
+      <input class="quantity-selector__input"
+          type="number"
+          name="quantity"
+          id="Quantity-{{ section_id }}"
+          min="1"
+          value="1"
+          form="{{ section_id }}"
+          aria-label="{{ 'products.product.quantity.input_label' | t: product: item.product.title | escape }}"
+          {% unless product_available %} disabled{% endunless %}
+          data-quantity-action-element
+        >
+      <button class="quantity-selector__button" name="plus" type="button" {% unless product_available %} disabled{% endunless %} data-quantity-action-element>
+        <span class="display--hidden">
+          {{ 'products.product.quantity.increase' | t: product: product.title | escape }}
+        </span>
+        {%- render 'icons', icon: 'plus' -%}
+      </button>
+    </quantity-input>
+
+    <button
+      type="submit"
+      data-submit-button
+      class="featured-product__add-to-cart-button element--full-width"
+    {% unless product_available %} disabled{% endunless %}
+    >
+      <span class="space--mr--xsmall" data-submit-button-text>
+        {%- if product_available -%}
+          {{ add_to_cart_label }}
+        {%- elsif product.available == false and product.tags contains 'coming-soon' -%}
+            {{ 'products.product.coming_soon' | t }}
+        {%- else -%}
+          {{ 'products.product.sold_out' | t }}
+        {%- endif -%}
+      </span>
+    </button>
+  </div>
+  {%- if show_dynamic_checkout -%}
+    <div class="space--mt--medium">
+      {{ form | payment_button }}
+    </div>
+  {%- endif -%}
+</div>

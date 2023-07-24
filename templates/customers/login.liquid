@@ -1,0 +1,136 @@
+{% style %}
+  #recover,
+  #recover + #recover-form {
+    display: none;
+  }
+
+  #recover:target {
+    display: block;
+  }
+
+  #recover:target + #recover-form {
+    display: block;
+  }
+{% endstyle %}
+
+<section class="container--page space--pb--xlarge space--mb--large">
+  <header id="login" tabindex="-1"  class="container--copy-max-width align--block-center space--pt--xlarge space--mb--large">
+    <h1 class="type--heading title--medium align--text-center">
+      {{ 'customer.login_page.title' | t }}
+    </h1>
+  </header>
+  <div id="login-form" class="container--form-max-width align--block-center">
+    {%- if recover_success == true -%}
+      <h3 tabindex="-1" autofocus class="align--text-center space--mb--medium">
+        {{ 'customer.recover_password.success' | t }}
+      </h3>
+    {%- endif -%}
+    {%- form 'customer_login', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}
+        <div class="space--mb--medium form-message">
+          <h2 tabindex="-1" autofocus class="form-message__focusable-title error space--mb--small">
+            <span class="display--hidden">{{ 'accessibility.error' | t }}</span>
+            {%- render 'icons', icon: 'error', class: 'form-message__icon space--mr--xsmall' -%}
+            {{ 'contact.error_heading' | t }}
+          </h2>
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+      <label for="CustomerEmail" class="space--mb--xsmall">
+        {{ 'customer.login_page.email' | t }}
+      </label>
+      <input
+        type="email"
+        name="customer[email]"
+        id="CustomerEmail"
+        autocomplete="email"
+        autocorrect="off"
+        autocapitalize="off"
+        {% if form.errors contains 'form' %}
+          aria-invalid="true"
+        {% endif %}
+        class="space--mb--large"
+      >
+      {%- if form.password_needed -%}
+        <label for="CustomerPassword" class="space--mb--xsmall">
+          {{ 'customer.login_page.password' | t }}
+        </label>
+        <input
+          type="password"
+          value=""
+          name="customer[password]"
+          id="CustomerPassword"
+          autocomplete="current-password"
+          {% if form.errors contains 'form' %}
+            aria-invalid="true"
+          {% endif %}
+          class="space--mb--large"
+        >
+      {%- endif -%}
+      <div class="align--text-center">
+        <button class="element--full-width space--mb--medium">
+          {{ 'customer.login_page.sign_in' | t }}
+        </button>
+        <a class="display--block" href="{{ routes.account_register_url }}">
+          {{ 'customer.login_page.create_account' | t }}
+        </a>
+        {%- if form.password_needed -%}
+          <a href="#recover" class="display--inline-block space--mt--medium">
+            {{ 'customer.login_page.forgot_password' | t }}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endform -%}
+  </div>
+  {%- if shop.checkout.guest_login -%}
+    {%- form 'guest_login', class: 'space--mt--medium' -%}
+      <button class="button--secondary align--block-center">
+        {{ 'customer.login_page.guest_title' | t }}
+      </button>
+    {%- endform -%}
+  {%- endif -%}
+
+  <header id="recover" tabindex="-1"  class="container--copy-max-width align--block-center space--mt--xlarge space--pt--large element--border-top--thick">
+    <h1 class="type--heading title--medium align--text-center space--mb--small">
+      {{ 'customer.recover_password.title' | t }}
+    </h1>
+    <p class="align--text-center">
+      {{ 'customer.recover_password.subtext' | t }}
+    </p>
+  </header>
+  <div id="recover-form" class="space--mt--large container--form-max-width align--block-center">
+    {%- form 'recover_customer_password' -%}
+      {% assign recover_success = form.posted_successfully? %}
+      <label for="RecoverEmail" class="space--mb--xsmall">
+        {{ 'customer.login_page.email' | t }}
+      </label>
+      <input type="email"
+        value=""
+        name="email"
+        id="RecoverEmail"
+        autocorrect="off"
+        autocapitalize="off"
+        autocomplete="email"
+        {% if form.errors %}
+          aria-invalid="true"
+          aria-describedby="RecoverEmail-email-error"
+          autofocus
+        {% endif %}
+      >
+      <div class="align--text-center">
+        {%- if form.errors -%}
+          <div id="RecoverEmail-email-error" class="flex flex--align-center--justify-center space--mt--small form-message">
+            {%- render 'icons', icon: 'error', size: '1.2em', class: 'form-message__icon space--mr--xsmall' -%}
+            {{ form.errors.messages['form'] }}
+          </div>
+        {%- endif -%}
+        <button class="space--mt--large space--mb--medium element--full-width">
+          {{ 'customer.login_page.submit' | t }}
+        </button>
+        <a href="#login">
+          {{ 'customer.login_page.cancel' | t }}
+        </a>
+      </div>
+    {%- endform -%}
+  </div>
+</section>

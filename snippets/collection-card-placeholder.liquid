@@ -1,0 +1,33 @@
+{% comment %}
+    Renders a collection card placeholder
+    - card_style: {String} The style of the card. (required)
+    - section_id: {String} The id of the section to which the collection belongs. (required)
+    - title_size: {String} The font size of the title.
+
+    Usage:
+    {%- render 'collection-card-placeholder', card_style: card_style, section_id: section.id -%}
+{% endcomment %}
+
+{%- liquid
+  assign min = 1
+  assign max = 6
+  assign diff = max | minus: min
+  assign random_number = "now" | date: "%N" | modulo: diff | plus: min
+  assign placeholder_svg = "collection-" | append: random_number
+-%}
+
+<div class="collection-card collection-card--{{ section_id }} collection-card--{{ card_style }}">
+  <div class="collection-card__container">
+    <div class="collection-card__image-container fade-in-image">
+      {{ placeholder_svg | placeholder_svg_tag: 'placeholder-svg object-fit__image--cover' }}
+    </div>
+    <div
+      class="collection-card__content">
+        <div class="collection-card__copy collection-card__copy--{{ title_size }}">
+          <h3 class="collection-card__title type--heading">
+            {{ 'onboarding.collection_title' | t }}
+          </h3>
+        </div>
+    </div>
+  </div>
+</div>

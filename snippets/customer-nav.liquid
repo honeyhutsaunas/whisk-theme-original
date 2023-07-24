@@ -1,0 +1,28 @@
+<header class="align--text-center space--mb--medium">
+  <h1 class="type--heading title--medium">
+    {% if customer.first_name %}
+      {{ 'customer.account.user_account_title_html' | t: first_name: customer.first_name }}
+    {% else %}
+      {{ 'customer.account.your_account' | t }}
+    {% endif %}
+  </h1>
+  <nav class="tab-nav space--mt--medium">
+    <ul class="tab-nav__list list--unstyled">
+      <li class="space--mh--medium">
+        <a href="{{ routes.account_url }}" {% if template.name == 'account' %}aria-current="page" class="tab-nav__link current-page"{% else %}class="tab-nav__link"{% endif %}>
+          {{ 'customer.account.orders' | t }}
+        </a>
+      </li>
+      <li class="space--mh--medium">
+        <a href="{{ routes.account_addresses_url }}" {% if template.name == 'addresses' %}aria-current="page" class="tab-nav__link current-page"{% else %}class="tab-nav__link"{% endif %}>
+          {{ 'customer.account.addresses' | t }}
+        </a>
+      </li>
+      <li class="space--mh--medium">
+        <a href="{{ routes.account_logout_url }}" class="tab-nav__link">
+          {{ 'customer.log_out' | t }}
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>

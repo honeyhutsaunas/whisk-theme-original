@@ -1,0 +1,91 @@
+<section class="container--page space--pt--large space--pb--xlarge space--mv--large">
+  <header class="container--copy-max-width align--block-center space--mb--large">
+    <h1 class="type--heading title--medium align--text-center">
+      {{ 'customer.register.title' | t }}
+    </h1>
+  </header>
+  <div class="container--form-max-width align--block-center">
+    {%- form 'create_customer', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}
+        <div class="space--mb--large form-message">
+          <h2 tabindex="-1" autofocus class="form-message__focusable-title error space--mb--small">
+            {%- render 'icons', icon: 'error', class: 'form-message__icon space--mr--xsmall' -%}
+            {{ 'contact.error_heading' | t }}
+          </h2>
+          <ul>
+            {%- for field in form.errors -%}
+              <li>
+                {%- if field == 'form' -%}
+                  {{ form.errors.messages[field] }}
+                {%- else -%}
+                  <a href="#RegisterForm-{{ field }}">
+                    {{ form.errors.translated_fields[field] | capitalize }}
+                    {{ form.errors.messages[field] }}
+                  </a>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+      <label for="RegisterForm-FirstName" class="space--mb--xsmall">
+        {{ 'customer.register.first_name' | t }}
+      </label>
+      <input
+        type="text"
+        name="customer[first_name]"
+        id="RegisterForm-FirstName"
+        {% if form.first_name %}value="{{ form.first_name }}"{% endif %}
+        autocomplete="given-name"
+      >
+      <label for="RegisterForm-LastName" class="space--mt--large space--mb--xsmall">
+        {{ 'customer.register.last_name' | t }}
+      </label>
+      <input
+        type="text"
+        name="customer[last_name]"
+        id="RegisterForm-LastName"
+        {% if form.last_name %}value="{{ form.last_name }}"{% endif %}
+        autocomplete="family-name"
+      >
+      <label for="RegisterForm-email" class="space--mt--large space--mb--xsmall">
+        {{ 'customer.register.email' | t }}
+      </label>
+      <input
+        type="email"
+        name="customer[email]"
+        id="RegisterForm-email"
+        {% if form.email %} value="{{ form.email }}"{% endif %}
+        spellcheck="false"
+        autocapitalize="off"
+        autocomplete="email"
+        aria-required="true"
+        {% if form.errors contains 'email' %}
+          aria-invalid="true"
+          aria-describedby="RegisterForm-email-error"
+        {% endif %}
+      >
+      <label for="RegisterForm-password" class="space--mt--large space--mb--xsmall">
+        {{ 'customer.register.password' | t }}
+      </label>
+      <input
+        type="password"
+        name="customer[password]"
+        id="RegisterForm-password"
+        aria-required="true"
+        {% if form.errors contains 'password' %}
+          aria-invalid="true"
+          aria-describedby="RegisterForm-password-error"
+        {% endif %}
+      >
+      <button class="element--full-width space--mv--large">
+        {{ 'customer.register.submit' | t }}
+      </button>
+      <div class="align--text-center">
+        <a href="{{ routes.account_login_url }}">
+          {{ 'customer.register.already_registered' | t }}
+        </a>
+      </div>
+    {%- endform -%}
+  </div>
+</section>

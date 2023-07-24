@@ -1,0 +1,62 @@
+.accordion {
+  border-top: var(--border--thin);
+}
+
+.accordion:last-of-type {
+  border-bottom: var(--border--thin);
+}
+
+.accordion--no-border,
+.accordion--no-border:last-of-type {
+  border: 0;
+}
+
+/* Adjust for flex gap spacing on product template */
+.featured-product__info-container .accordion:not(:last-of-type) {
+  margin-bottom: calc(var(--space-medium) * -1);
+}
+
+.accordion .accordion__summary {
+  align-items: center;
+  color: var(--color-foreground);
+  justify-content: space-between;
+  position: relative;
+  line-height: 1;
+  padding-bottom: 1.25em;
+  padding-top: 1.25em;
+  text-decoration: none;
+}
+
+.accordion--no-border .accordion__summary {
+  justify-content: center;
+  padding-bottom: var(--space-medium);
+  padding-top: var(--space-medium);
+}
+
+/* Fallback for Safari 14 and earlier that has flexbox bugs */
+.accordion .icon--to-open {
+  position: absolute;
+  top: 1.5rem;
+  right: 0;
+}
+
+@supports (aspect-ratio: 1) {
+  .accordion .accordion__summary {
+    display: flex;
+    gap: var(--space-xsmall);
+    justify-content: space-between;
+  }
+
+  .accordion .icon--to-open {
+    position: static;
+  }
+}
+
+.accordion__content {
+  margin-bottom: 1.5rem;
+  word-break: break-word;
+}
+
+.accordion__content img {
+  max-width: 100%;
+}

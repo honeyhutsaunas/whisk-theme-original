@@ -1,0 +1,533 @@
+/* colors */
+.color--primary {
+  color: var(--color-primary);
+  fill: currentColor;
+}
+
+.color--secondary {
+  color: var(--color-secondary);
+  fill: currentColor;
+}
+
+.color--tertiary {
+  color: var(--color-tertiary);
+  fill: currentColor;
+}
+
+.color--quaternary {
+  color: var(--color-quaternary);
+  fill: currentColor;
+}
+
+.color--quinary {
+  color: var(--color-quinary);
+  fill: currentColor;
+}
+
+.color--senary {
+  color: var(--color-senary);
+  fill: currentColor;
+}
+
+.color--bg-default {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  fill: currentColor;
+}
+
+.color--underneath-default {
+  background-color: var(--color-background);
+}
+
+.color--bg-inverse {
+  --color-border: hsla(var(--color-background-raw), var(--border-color-opacity));
+  background-color: var(--color-foreground);
+  color: var(--color-background);
+  fill: currentColor;
+}
+
+.color--bg-inverse a,
+.color--bg-inverse summary,
+a.color--bg-inverse {
+  --color-link: var(--color-background);
+  --color-link-raw: var(--color-background-raw);
+}
+
+.color--bg-inverse button,
+.color--bg-inverse .button {
+  --button-background-color: var(--color-background);
+  --button-background-color-raw: var(--color-background-raw);
+  --button-foreground-color: var(--color-foreground);
+  --button-foreground-color-raw: var(--color-foreground-raw);
+}
+
+.color--bg-inverse button:hover,
+.color--bg-inverse .button:hover {
+  border-color: hsla(var(--color-foreground-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-foreground-raw), 0.1);
+}
+
+.color--bg-inverse .button--secondary {
+  --button-background-color: hsla(var(--color-background-raw), 0.2);
+  --button-background-color-raw: var(--color-background-raw);
+  --button-foreground-color: var(--color-background);
+  --button-foreground-color-raw: var(--color-background-raw);
+}
+
+.cart-notification.color--bg-inverse .button--reset,
+.color--bg-inverse .button--icon,
+.color--bg-inverse .quantity-selector__button {
+  --button-background-color: transparent;
+  --button-background-color-raw: transparent;
+  --button-foreground-color: var(--color-background);
+  --button-foreground-color-raw: var(--color-background-raw);
+}
+
+.color--bg-inverse input,
+.color--bg-inverse textarea {
+  color: var(--color-background);
+  background-color: var(--color-foreground);
+  border-color: var(--color-border);
+}
+
+.color--bg-inverse input:focus,
+.color--bg-inverse textarea:focus {
+  border-color: var(--color-background);
+}
+
+.color--bg-inverse input::placeholder,
+.color--bg-inverse textarea::placeholder {
+  color: hsla(var(--color-background-raw), 0.5);
+}
+
+.color--underneath-inverse {
+  background-color: var(--color-foreground);
+}
+
+.color--bg-primary {
+  --color-border: hsla(var(--color-primary-contrast-raw), var(--border-color-opacity));
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  fill: currentColor;
+}
+
+.color--bg-primary a,
+.color--bg-primary summary,
+a.color--bg-primary {
+  --color-link: var(--color-primary-contrast);
+  --color-link-raw: var(--color-primary-contrast-raw);
+}
+
+.color--bg-primary button,
+.color--bg-primary .button {
+  --button-background-color: var(--color-primary-contrast);
+  --button-background-color-raw: var(--color-primary-contrast-raw);
+  --button-foreground-color: var(--color-primary);
+  --button-foreground-color-raw: var(--color-primary-raw);
+}
+
+.color--bg-primary button:hover,
+.color--bg-primary .button:hover {
+  border-color: hsla(var(--color-primary-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-primary-raw), 0.1);
+}
+
+.color--bg-primary .button--secondary {
+  --button-background-color: hsla(var(--color-primary-contrast-raw), 0.2);
+  --button-background-color-raw: var(--color-primary-contrast-raw);
+  --button-foreground-color: var(--color-primary-contrast);
+  --button-foreground-color-raw: var(--color-primary-contrast-raw);
+}
+
+.color--bg-primary .button--secondary:hover {
+  border-color: hsla(var(--color-primary-contrast-raw), 0.15);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-primary-contrast-raw), 0.1);
+}
+
+.color--bg-primary .button--reset,
+.color--bg-primary .button--icon,
+.color--bg-primary .quantity-selector__button {
+  --button-background-color: transparent;
+  --button-background-color-raw: transparent;
+  --button-foreground-color: var(--color-primary-contrast);
+  --button-foreground-color-raw: var(--color-primary-contrast-raw);
+}
+
+.color--bg-primary input,
+.color--bg-primary textarea {
+  color: var(--color-primary-contrast);
+  background-color: var(--color-primary);
+  border-color: var(--color-border);
+}
+
+.color--bg-primary input:focus,
+.color--bg-primary textarea:focus {
+  border-color: var(--color-primary-contrast);
+}
+
+.color--bg-primary input::placeholder,
+.color--bg-primary textarea::placeholder {
+  color: hsla(var(--color-primary-contrast-raw), 0.5);
+}
+
+.color--underneath-primary {
+  background-color: var(--color-primary);
+}
+
+.color--bg-secondary {
+  --color-border: hsla(var(--color-secondary-contrast-raw), var(--border-color-opacity));
+  background-color: var(--color-secondary);
+  color: var(--color-secondary-contrast);
+  fill: currentColor;
+}
+
+.color--bg-secondary a,
+.color--bg-secondary summary,
+a.color--bg-secondary {
+  --color-link: var(--color-secondary-contrast);
+  --color-link-raw: var(--color-secondary-contrast-raw);
+}
+
+.color--bg-secondary button,
+.color--bg-secondary .button {
+  --button-background-color: var(--color-secondary-contrast);
+  --button-background-color-raw: var(--color-secondary-contrast-raw);
+  --button-foreground-color: var(--color-secondary);
+  --button-foreground-color-raw: var(--color-secondary-raw);
+}
+
+.color--bg-secondary button:hover,
+.color--bg-secondary .button:hover {
+  border-color: hsla(var(--color-secondary-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-secondary-raw), 0.1);
+}
+
+.color--bg-secondary .button--secondary {
+  --button-background-color: hsla(var(--color-secondary-contrast-raw), 0.2);
+  --button-background-color-raw: var(--color-secondary-contrast-raw);
+  --button-foreground-color: var(--color-secondary-contrast);
+  --button-foreground-color-raw: var(--color-secondary-contrast-raw);
+}
+
+.color--bg-secondary .button--secondary:hover {
+  border-color: hsla(var(--color-secondary-contrast-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-secondary-contrast-raw), 0.1);
+}
+
+.color--bg-secondary .button--reset,
+.color--bg-secondary .button--icon,
+.color--bg-secondary .quantity-selector__button {
+  --button-background-color: transparent;
+  --button-background-color-raw: transparent;
+  --button-foreground-color: var(--color-secondary-contrast);
+  --button-foreground-color-raw: var(--color-secondary-contrast-raw);
+}
+
+.color--bg-secondary input,
+.color--bg-secondary textarea {
+  color: var(--color-secondary-contrast);
+  background-color: var(--color-secondary);
+  border-color: var(--color-border);
+}
+
+.color--bg-secondary input:focus,
+.color--bg-secondary textarea:focus {
+  border-color: var(--color-secondary-contrast);
+}
+
+.color--bg-secondary input::placeholder,
+.color--bg-secondary textarea::placeholder {
+  color: hsla(var(--color-secondary-contrast-raw), 0.5);
+}
+
+.color--underneath-secondary {
+  background-color: var(--color-secondary);
+}
+
+.color--bg-tertiary {
+  --color-border: hsla(var(--color-tertiary-contrast-raw), var(--border-color-opacity));
+  background-color: var(--color-tertiary);
+  color: var(--color-tertiary-contrast);
+  fill: currentColor;
+}
+
+.color--bg-tertiary a,
+.color--bg-tertiary summary,
+a.color--bg-tertiary {
+  --color-link: var(--color-tertiary-contrast);
+  --color-link-raw: var(--color-tertiary-contrast-raw);
+}
+
+.color--bg-tertiary button,
+.color--bg-tertiary .button {
+  --button-background-color: var(--color-tertiary-contrast);
+  --button-background-color-raw: var(--color-tertiary-contrast-raw);
+  --button-foreground-color: var(--color-tertiary);
+  --button-foreground-color-raw: var(--color-tertiary-raw);
+}
+
+.color--bg-tertiary button:hover,
+.color--bg-tertiary .button:hover {
+  border-color: hsla(var(--color-tertiary-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-tertiary-raw), 0.1);
+}
+
+.color--bg-tertiary .button--secondary {
+  --button-background-color: hsla(var(--color-tertiary-contrast-raw), 0.2);
+  --button-background-color-raw: var(--color-tertiary-contrast-raw);
+  --button-foreground-color: var(--color-tertiary-contrast);
+  --button-foreground-color-raw: var(--color-tertiary-contrast-raw);
+}
+
+.color--bg-tertiary .button--secondary:hover {
+  border-color: hsla(var(--color-tertiary-contrast-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-tertiary-contrast-raw), 0.1);
+}
+
+.color--bg-tertiary .button--reset,
+.color--bg-tertiary .button--icon,
+.color--bg-tertiary .quantity-selector__button {
+  --button-background-color: transparent;
+  --button-background-color-raw: transparent;
+  --button-foreground-color: var(--color-tertiary-contrast);
+  --button-foreground-color-raw: var(--color-tertiary-contrast-raw);
+}
+
+.color--bg-tertiary input,
+.color--bg-tertiary textarea {
+  color: var(--color-tertiary-contrast);
+  background-color: var(--color-tertiary);
+  border-color: var(--color-border);
+}
+
+.color--bg-tertiary input:focus,
+.color--bg-tertiary textarea:focus {
+  border-color: var(--color-tertiary-contrast);
+}
+
+.color--bg-tertiary input::placeholder,
+.color--bg-tertiary textarea::placeholder {
+  color: hsla(var(--color-tertiary-contrast-raw), 0.5);
+}
+
+.color--underneath-tertiary {
+  background-color: var(--color-tertiary);
+}
+
+.color--bg-quaternary {
+  --color-border: hsla(var(--color-quaternary-contrast-raw), var(--border-color-opacity));
+  background-color: var(--color-quaternary);
+  color: var(--color-quaternary-contrast);
+  fill: currentColor;
+}
+
+.color--bg-quaternary a,
+.color--bg-quaternary summary,
+a.color--bg-quaternary {
+  --color-link: var(--color-quaternary-contrast);
+  --color-link-raw: var(--color-quaternary-contrast-raw);
+}
+
+.color--bg-quaternary button,
+.color--bg-quaternary .button {
+  --button-background-color: var(--color-quaternary-contrast);
+  --button-background-color-raw: var(--color-quaternary-contrast-raw);
+  --button-foreground-color: var(--color-quaternary);
+  --button-foreground-color-raw: var(--color-quaternary-raw);
+}
+
+.color--bg-quaternary button:hover,
+.color--bg-quaternary .button:hover {
+  border-color: hsla(var(--color-quaternary-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-quaternary-raw), 0.1);
+}
+
+.color--bg-quaternary .button--secondary {
+  --button-background-color: hsla(var(--color-quaternary-contrast-raw), 0.2);
+  --button-background-color-raw: var(--color-quaternary-contrast-raw);
+  --button-foreground-color: var(--color-quaternary-contrast);
+  --button-foreground-color-raw: var(--color-quaternary-contrast-raw);
+}
+
+.color--bg-quaternary .button--secondary:hover {
+  border-color: hsla(var(--color-quaternary-contrast-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-quaternary-contrast-raw), 0.1);
+}
+
+.color--bg-quaternary .button--reset,
+.color--bg-quaternary .button--icon,
+.color--bg-quaternary .quantity-selector__button {
+  --button-background-color: transparent;
+  --button-background-color-raw: transparent;
+  --button-foreground-color: var(--color-quaternary-contrast);
+  --button-foreground-color-raw: var(--color-quaternary-contrast-raw);
+}
+
+.color--bg-quaternary input,
+.color--bg-quaternary textarea {
+  color: var(--color-quaternary-contrast);
+  background-color: var(--color-quaternary);
+  border-color: var(--color-border);
+}
+
+.color--bg-quaternary input:focus,
+.color--bg-quaternary textarea:focus {
+  border-color: var(--color-quaternary-contrast);
+}
+
+.color--bg-quaternary input::placeholder,
+.color--bg-quaternary textarea::placeholder {
+  color: hsla(var(--color-quaternary-contrast-raw), 0.5);
+}
+
+.color--underneath-quaternary {
+  background-color: var(--color-quaternary);
+}
+
+.color--bg-quinary {
+  --color-border: hsla(var(--color-quinary-contrast-raw), var(--border-color-opacity));
+  background-color: var(--color-quinary);
+  color: var(--color-quinary-contrast);
+  fill: currentColor;
+}
+
+.color--bg-quinary a,
+.color--bg-quinary summary,
+a.color--bg-quinary {
+  --color-link: var(--color-quinary-contrast);
+  --color-link-raw: var(--color-quinary-contrast-raw);
+}
+
+.color--bg-quinary button,
+.color--bg-quinary .button {
+  --button-background-color: var(--color-quinary-contrast);
+  --button-background-color-raw: var(--color-quinary-contrast-raw);
+  --button-foreground-color: var(--color-quinary);
+  --button-foreground-color-raw: var(--color-quinary-raw);
+}
+
+.color--bg-quinary button:hover,
+.color--bg-quinary .button:hover {
+  border-color: hsla(var(--color-quinary-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-quinary-raw), 0.1);
+}
+
+.color--bg-quinary .button--secondary {
+  --button-background-color: hsla(var(--color-quinary-contrast-raw), 0.2);
+  --button-background-color-raw: var(--color-quinary-contrast-raw);
+  --button-foreground-color: var(--color-quinary-contrast);
+  --button-foreground-color-raw: var(--color-quinary-contrast-raw);
+}
+
+.color--bg-quinary .button--secondary:hover {
+  border-color: hsla(var(--color-quinary-contrast-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-quinary-contrast-raw), 0.1);
+}
+
+.color--bg-quinary .button--reset,
+.color--bg-quinary .button--icon,
+.color--bg-quinary .quantity-selector__button {
+  --button-background-color: transparent;
+  --button-background-color-raw: transparent;
+  --button-foreground-color: var(--color-quinary-contrast);
+  --button-foreground-color-raw: var(--color-quinary-contrast-raw);
+}
+
+.color--bg-quinary input,
+.color--bg-quinary textarea {
+  color: var(--color-quinary-contrast);
+  background-color: var(--color-quinary);
+  border-color: var(--color-border);
+}
+
+.color--bg-quinary input:focus,
+.color--bg-quinary textarea:focus {
+  border-color: var(--color-quinary-contrast);
+}
+
+.color--bg-quinary input::placeholder,
+.color--bg-quinary textarea::placeholder {
+  color: hsla(var(--color-quinary-contrast-raw), 0.5);
+}
+
+.color--underneath-quinary {
+  background-color: var(--color-quinary);
+}
+
+.color--bg-senary {
+  --color-border: hsla(var(--color-senary-contrast-raw), var(--border-color-opacity));
+  background-color: var(--color-senary);
+  color: var(--color-senary-contrast);
+  fill: currentColor;
+}
+
+.color--bg-senary a,
+.color--bg-senary summary,
+a.color--bg-senary {
+  --color-link: var(--color-senary-contrast);
+  --color-link-raw: var(--color-senary-contrast-raw);
+}
+
+.color--bg-senary button,
+.color--bg-senary .button {
+  --button-background-color: var(--color-senary-contrast);
+  --button-background-color-raw: var(--color-senary-contrast-raw);
+  --button-foreground-color: var(--color-senary);
+  --button-foreground-color-raw: var(--color-senary-raw);
+}
+
+.color--bg-senary button:hover,
+.color--bg-senary .button:hover {
+  border-color: hsla(var(--color-senary-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-senary-raw), 0.1);
+}
+
+.color--bg-senary .button--secondary {
+  --button-background-color: hsla(var(--color-senary-contrast-raw), 0.2);
+  --button-background-color-raw: var(--color-senary-contrast-raw);
+  --button-foreground-color: var(--color-senary-contrast);
+  --button-foreground-color-raw: var(--color-senary-contrast-raw);
+}
+
+.color--bg-senary .button--secondary:hover {
+  border-color: hsla(var(--color-senary-contrast-raw), 0.1);
+  box-shadow: inset 0 0 0 2em hsla(var(--color-senary-contrast-raw), 0.1);
+}
+
+.color--bg-senary .button--reset,
+.color--bg-senary .button--icon,
+.color--bg-senary .quantity-selector__button {
+  --button-background-color: transparent;
+  --button-background-color-raw: transparent;
+  --button-foreground-color: var(--color-senary-contrast);
+  --button-foreground-color-raw: var(--color-senary-contrast-raw);
+}
+
+.color--bg-senary input,
+.color--bg-senary textarea {
+  color: var(--color-senary-contrast);
+  background-color: var(--color-senary);
+  border-color: var(--color-border);
+}
+
+.color--bg-senary input:focus,
+.color--bg-senary textarea:focus {
+  border-color: var(--color-senary-contrast);
+}
+
+.color--bg-senary input::placeholder,
+.color--bg-senary textarea::placeholder {
+  color: hsla(var(--color-senary-contrast-raw), 0.5);
+}
+
+.color--underneath-senary {
+  background-color: var(--color-senary);
+}
+
+.color--underneath-site-header-bg {
+  background-color: var(--color-site-header-bg);
+}
+
+.color--underneath-site-footer-bg {
+  background-color: var(--color-site-footer-bg);
+}

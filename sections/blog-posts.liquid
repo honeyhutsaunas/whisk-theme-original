@@ -1,0 +1,326 @@
+{%- liquid
+  assign article_classes =  'blog-posts__post article-card--' | append: section.settings.content_box_shape
+
+  if section.settings.show_featured_article
+    assign featured_article_color_scheme = 'color--bg-' | append: section.settings.featured_featured_article_color_scheme
+    assign featured_article_classes = 'blog-posts__post blog-posts__post--featured article-card--featured article-card--' | append: section.settings.content_box_shape
+  endif
+
+  if section.settings.show_slider_mobile and section.blocks.size > 1
+    assign show_slider_mobile = true
+  endif
+-%}
+
+<div class="blog-posts {% if section.settings.content_box_shape == 'half-arch' %}blog-posts--half-arch-cards{% endif %} {% if section.settings.show_featured_article %}blog-posts--with-featured-article{% endif %} {% if section.settings.spacing_top %}space--pt--xlarge{% endif %} {% if section.settings.spacing_bottom %}space--pb--xlarge{% endif %}">
+  {%- unless section.settings.heading == blank -%}
+    <h2 class="type--heading title--{{ section.settings.heading_size }} align--text-center container--page">
+      {{ section.settings.heading | escape }}
+    </h2>
+  {%- endunless -%}
+  {%- unless section.settings.text == blank -%}
+    <div class="container--copy-max-width rte copy--{{ section.settings.text_size }} space--mt--small align--text-center align--block-center space--viewport-sides">
+      {{ section.settings.text }}
+    </div>
+  {%- endunless -%}
+
+  <div class="{% unless section.settings.heading == blank and section.settings.text == blank %}space--mt--large{% endunless %}">
+    {%- if section.blocks.size > 0 -%}
+      {%- if show_slider_mobile -%}
+        {% comment %} Desktop grid {% endcomment %}
+        <div class="blog-posts__grid blog-posts__grid--{{ section.blocks.size }}-articles display--none--medium-down container--page">
+          {%- liquid
+            for block in section.blocks
+              if forloop.first == true and section.settings.show_featured_article
+                render 'article-card', article: block.settings.article, first_section: section.settings.first_section, image_sizes: '(min-width: 768px) 80vw, (min-width: 900px) 900px, 100vw', is_featured: true, section_id: section.id, show_image: true, show_date: section.settings.show_date, show_author: section.settings.show_author, show_teaser_text: true, featured_article_color_scheme: featured_article_color_scheme, class: featured_article_classes
+              else
+                render 'article-card', article: block.settings.article, first_section: section.settings.first_section, image_sizes: '50vw', section_id: section.id, show_image: section.settings.show_image, show_date: section.settings.show_date, show_author: section.settings.show_author, show_teaser_text: section.settings.show_teaser_text, class: article_classes
+              endif
+            endfor
+          -%}
+          {%- if section.settings.blog != blank -%}
+            <div class="cards__card-container cards__card-container--view-more element--full-height flex flex--align-center--justify-center">
+              <div class="cards__view-more">
+                <a href="{{ section.settings.blog.url }}" class="button button--secondary align--block-center">
+                  {{ 'blogs.view_more_articles' | t }}
+                </a>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+
+        {% comment %} Mobile slider {% endcomment %}
+        <slider-component class="display--none--medium-up" data-slide-spacing-left="40">
+          <ul id="Slider-{{ section.id }}" class="cards cards--1-across cards--slider-mobile" aria-label="{{ 'slider.title' | t }}">
+            {%- for block in section.blocks -%}
+              <li id="Slide-{{ section.id }}-{{ forloop.index }}" class="cards__card-container" {{ block.shopify_attributes }}>
+                {%- liquid
+                  if forloop.first == true and section.settings.show_featured_article
+                    render 'article-card', article: block.settings.article, first_section: section.settings.first_section, image_sizes: '90vw', is_featured: true, section_id: section.id, show_image: true, show_date: section.settings.show_date, show_author: section.settings.show_author, show_teaser_text: true, featured_article_color_scheme: featured_article_color_scheme, class: featured_article_classes
+                  else
+                    render 'article-card', article: block.settings.article, first_section: section.settings.first_section, image_sizes: '90vw', section_id: section.id, show_image: section.settings.show_image, show_date: section.settings.show_date, show_author: section.settings.show_author, show_teaser_text: section.settings.show_teaser_text, class: article_classes
+                  endif
+                -%}
+              </li>
+            {%- endfor -%}
+            {%- if section.settings.blog != blank -%}
+              <li id="Slide-{{ section.id }}-view-more" class="cards__card-container cards__card-container--view-more">
+                <div class="cards__view-more image-container image-container--article image-container--no-bg">
+                  <a href="{{ section.settings.blog.url }}"
+                    class="button button--secondary align--block-center"
+                    aria-label="{{ 'featured_collection.view_all_label' | t: collection_name: section.settings.collection.title }}"
+                  >
+                    {{ 'blogs.view_more_articles' | t }}
+                  </a>
+                </div>
+              </li>
+            {%- endif -%}
+          </ul>
+          <div class="cards__slider-buttons no-js-hidden">
+            <button type="button" class="button--slider button--next" name="next" aria-label="{{ 'slider.next_slide' | t }}" aria-controls="Slider-{{ section.id }}">
+              {%- render 'icons', icon: 'caret' -%}
+            </button>
+            <button type="button" class="button--slider button--prev" name="previous" aria-label="{{ 'slider.previous_slide' | t }}" aria-controls="Slider-{{ section.id }}">
+              {%- render 'icons', icon: 'caret' -%}
+            </button>
+          </div>
+        </slider-component>
+      {%- else -%}
+        <div class="blog-posts__grid blog-posts__grid--{{ section.blocks.size }}-articles container--page">
+          {%- liquid
+            for block in section.blocks
+              if forloop.first == true and section.settings.show_featured_article
+                render 'article-card', article: block.settings.article, first_section: section.settings.first_section, image_sizes: '(min-width: 768px) 80vw, (min-width: 900px) 900px, 100vw', is_featured: true, section_id: section.id, show_image: true, show_date: section.settings.show_date, show_author: section.settings.show_author, show_teaser_text: true, featured_article_color_scheme: featured_article_color_scheme, class: featured_article_classes
+              else
+                render 'article-card', article: block.settings.article, first_section: section.settings.first_section, image_sizes: '50vw', section_id: section.id, show_image: section.settings.show_image, show_date: section.settings.show_date, show_author: section.settings.show_author, show_teaser_text: section.settings.show_teaser_text, class: article_classes
+              endif
+            endfor
+          -%}
+          {%- if section.settings.blog != blank -%}
+            <div class="cards__card-container cards__card-container--view-more element--full-height flex flex--align-center--justify-center">
+              <div class="cards__view-more">
+                <a href="{{ section.settings.blog.url }}" class="button button--secondary align--block-center">
+                  {{ 'blogs.view_more_articles' | t }}
+                </a>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:blog_posts.name",
+  "tag": "section",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "first_section",
+      "label": "t:first_section.label",
+      "default": false,
+      "info": "t:first_section.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_top",
+      "default": true,
+      "label": "t:spacing_top.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_bottom",
+      "default": true,
+      "label": "t:spacing_bottom.label"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:heading.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "large",
+          "label": "t:heading.settings.heading_size.option_large"
+        },
+        {
+          "value": "medium",
+          "label": "t:heading.settings.heading_size.option_medium"
+        },
+        {
+          "value": "small",
+          "label": "t:heading.settings.heading_size.option_small"
+        }
+      ],
+      "default": "medium",
+      "label": "t:heading.settings.heading_size.label"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:text.label"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "options": [
+        {
+          "value": "large",
+          "label": "t:text.settings.text_size.option_large"
+        },
+        {
+          "value": "medium",
+          "label": "t:text.settings.text_size.option_medium"
+        },
+        {
+          "value": "small",
+          "label": "t:text.settings.text_size.option_small"
+        },
+        {
+          "value": "xsmall",
+          "label": "t:text.settings.text_size.option_xsmall"
+        }
+      ],
+      "default": "medium",
+      "label": "t:text.settings.text_size.label"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "t:blog_posts.settings.blog.label",
+      "info": "t:blog_posts.settings.blog.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_slider_mobile",
+      "default": true,
+      "label": "t:slider.settings.show_slider_mobile.label"
+    },
+    {
+      "type": "header",
+      "content": "t:article_card.name"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "default": true,
+      "label": "t:article_card.settings.show_image.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "default": true,
+      "label": "t:article_card.settings.show_date.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "default": false,
+      "label": "t:article_card.settings.show_author.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_teaser_text",
+      "default": true,
+      "label": "t:article_card.settings.show_teaser.label",
+      "info": "t:article_card.settings.show_teaser.info"
+    },
+    {
+      "type": "select",
+      "id": "content_box_shape",
+      "options": [
+        {
+          "value": "rectangle",
+          "label": "t:content_box_shape.option_rectangle"
+        },
+        {
+          "value": "half-arch",
+          "label": "t:content_box_shape.option_half_arch"
+        }
+      ],
+      "default": "half-arch",
+      "label": "t:content_box_shape.label"
+    },
+    {
+      "type": "header",
+      "content": "t:blog_posts.settings.featured_article"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_featured_article",
+      "default": true,
+      "label": "t:blog_posts.settings.show_featured_article.label"
+    },
+    {
+      "type": "select",
+      "id": "featured_featured_article_color_scheme",
+      "options": [
+        {
+          "value": "inverse",
+          "label": "t:color_scheme.option_inverse"
+        },
+        {
+          "value": "primary",
+          "label": "t:color_scheme.option_accent_1"
+        },
+        {
+          "value": "secondary",
+          "label": "t:color_scheme.option_accent_2"
+        },
+        {
+          "value": "tertiary",
+          "label": "t:color_scheme.option_accent_3"
+        },
+        {
+          "value": "quaternary",
+          "label": "t:color_scheme.option_accent_4"
+        },
+        {
+          "value": "quinary",
+          "label": "t:color_scheme.option_accent_5"
+        },
+        {
+          "value": "senary",
+          "label": "t:color_scheme.option_accent_6"
+        }
+      ],
+      "default": "inverse",
+      "label": "t:blog_posts.settings.featured_article_color_scheme.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "article",
+      "name": "t:article.name",
+      "settings": [
+        {
+          "type": "article",
+          "id": "article",
+          "label": "t:article.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:blog_posts.name",
+      "blocks": [
+        {
+          "type": "article"
+        },
+        {
+          "type": "article"
+        },
+        {
+          "type": "article"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

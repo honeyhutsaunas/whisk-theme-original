@@ -1,0 +1,48 @@
+{% comment %} Don't load on the cart page to prevent this section from rendering twice {% endcomment %}
+{%- unless template.name == 'cart' -%}
+  {%- liquid
+    if settings.cart_icon == "icon_cart"
+      assign cart_title = 'cart.title_cart' | t
+    elsif settings.cart_icon == "icon_bag"
+      assign cart_title = 'cart.title_bag' | t
+    else
+      assign cart_title = 'cart.title_basket' | t
+    endif
+  -%}
+
+  <cart-drawer id="cart-drawer" data-drawer-dialog class="drawer drawer--cart color--bg-{{ settings.cart_drawer_style }} motion-reduce no-js-hidden" aria-labelledby="CartDrawerTitle" tabindex="-1" hidden role="dialog">
+    <header class="drawer__header drawer__header--cart element--border-bottom--thick">
+      <button class="button--icon drawer__close-button--left" data-drawer-to-close="cart-drawer" aria-label="{{ 'accessibility.close' | t }}">
+        {%- render 'icons', icon: 'close', size: '30' -%}
+      </button>
+      <h2 class="type--heading title--xsmall align--text-center">
+        {{ cart_title }}
+      </h2>
+      <div id="cart-drawer-icon-bubble">
+        <div class="site-header__cart-indicator space--mt--xsmall">
+          {% render 'icons', icon: 'cart' %}
+          {%- if cart != empty -%}
+            <div class="site-header__cart-count color--bg-primary">
+              {%- if cart.item_count < 100 -%}
+                <span aria-hidden="true">
+                  {{- cart.item_count -}}
+                </span>
+              {%- endif -%}
+              <span class="display--hidden">
+                {{ 'header.cart_count' | t: count: cart.item_count }}
+              </span>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </header>
+    <div id="cart-drawer-contents" class="drawer__scrollable">
+      <div class="space--drawer-sides">
+        {%- render 'cart-items' -%}
+      </div>
+      <div class="drawer__sticky-footer space--drawer-sides space--pb--medium element--border-top--thick">
+        {%- render 'cart-footer' -%}
+      </div>
+    </div>
+  </cart-drawer>
+{%- endunless -%}

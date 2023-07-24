@@ -1,0 +1,55 @@
+{%- liquid
+  if settings.cart_icon == "icon_cart"
+    assign cart_title = 'cart.title_cart' | t
+  elsif settings.cart_icon == "icon_bag"
+    assign cart_title = 'cart.title_bag' | t
+  else
+    assign cart_title = 'cart.title_basket' | t
+  endif
+-%}
+
+{%- if settings.cart_type == 'page' or template.name == 'cart' -%}
+  <a class="button--icon site-header__icon-button" href="{{ routes.cart_url }}">
+    <div class="site-header__cart-indicator">
+      {% render 'icons', icon: 'cart' %}
+      <span class="display--hidden">
+        {{ cart_title }}
+      </span>
+      {%- if cart != empty -%}
+        <div class="site-header__cart-count color--bg-primary">
+          {%- if cart.item_count < 100 -%}
+            <span aria-hidden="true">
+              {{- cart.item_count -}}
+            </span>
+          {%- endif -%}
+          <span class="display--hidden">
+            {{ 'header.cart_count' | t: count: cart.item_count }}
+          </span>
+        </div>
+      {%- endif -%}
+    </div>
+  </a>
+{%- else -%}
+  <drawer-opener id="cart-drawer-opener" data-drawer-id="cart-drawer" data-type="{{ settings.cart_type }}">
+    <button class="button--icon site-header__icon-button" data-drawer-to-open="cart-drawer" aria-haspopup="dialog" aria-label="{{ cart_title }}">
+      <div class="site-header__cart-indicator">
+        {% render 'icons', icon: 'cart' %}
+        <span class="display--hidden">
+          {{ cart_title }}
+        </span>
+        {%- if cart != empty -%}
+          <div class="site-header__cart-count color--bg-primary">
+            {%- if cart.item_count < 100 -%}
+              <span aria-hidden="true">
+                {{- cart.item_count -}}
+              </span>
+            {%- endif -%}
+            <span class="display--hidden">
+              {{ 'header.cart_count' | t: count: cart.item_count }}
+            </span>
+          </div>
+        {%- endif -%}
+      </div>
+    </button>
+  </drawer-opener>
+{%- endif -%}

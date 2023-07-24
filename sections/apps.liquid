@@ -1,0 +1,44 @@
+<div class="{% unless section.settings.full_width %}container--page{% endunless %} {% if section.settings.spacing_top %}space--pt--xlarge{% endif %} {% if section.settings.spacing_bottom %}space--pb--xlarge{% endif %}">
+  {%- for block in section.blocks -%}
+    <div {{ block.shopify_attributes }}>
+      {% render block %}
+    </div>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:apps.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "t:full_width.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_top",
+      "default": false,
+      "label": "t:spacing_top.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_bottom",
+      "default": false,
+      "label": "t:spacing_bottom.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:apps.name"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,23 @@
+.tab-nav__list {
+  display: flex;
+  justify-content: center;
+}
+
+.tab-nav__link {
+  border-bottom: var(--border-size--thick) solid transparent;
+  display: block;
+  text-decoration: none;
+  position: relative;
+  top: var(--border-size--thick);
+  padding: var(--space-xsmall) 0;
+  transition-property: border;
+}
+
+.tab-nav__link:hover,
+.tab-nav__link.current-page {
+  border-bottom-color: hsla(var(--color-foreground-raw), 0.5);
+}
+
+.tab-nav__link.current-page {
+  font-weight: bold;
+}

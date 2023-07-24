@@ -1,0 +1,155 @@
+<div class="container--page container--copy-max-width {% if section.settings.spacing_top %}space--pt--xlarge{% endif %} {% if section.settings.spacing_bottom %}space--pb--xlarge{% endif %}">
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when 'collapsible_tab' -%}
+        <details class="accordion" id="Details-{{ block.id }}-{{ section.id }}" {{ block.shopify_attributes }}>
+          <summary class="accordion__summary">
+            <div class="flex flex--align-center">
+              <h3 class="copy--large line-height--copy">
+                {{ block.settings.heading }}
+              </h3>
+            </div>
+            <span class="icon--to-open motion-reduce">
+              {%- render 'icons', icon: 'plus', size: '1.2rem' -%}
+            </span>
+          </summary>
+          <div class="accordion__content rte" id="QuestionAccordion-{{ block.id }}-{{ section.id }}">
+            {{ block.settings.content }}
+          </div>
+        </details>
+
+      {%- when 'section_header' -%}
+        <header id="{{ block.settings.heading | handleize }}" class="space--mb--large" {{ block.shopify_attributes }}>
+          {%- if block.settings.heading -%}
+            <h2 class="type--heading title--{{ block.settings.heading_size }} align--text-center">
+              {{ block.settings.heading | escape }}
+            </h2>
+          {%- endif -%}
+          {%- unless block.settings.text == blank -%}
+            <div class="container--copy-max-width rte copy--{{ block.settings.text_size }} space--mt--small align--text-center align--block-center">
+              {{ block.settings.text }}
+            </div>
+          {%- endunless -%}
+        </header>
+    {%- endcase -%}
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:question_answer.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "spacing_top",
+      "default": true,
+      "label": "t:spacing_top.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_bottom",
+      "default": true,
+      "label": "t:spacing_bottom.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "section_header",
+      "name": "t:question_answer.blocks.section_header.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Heading",
+          "info": "t:question_answer.blocks.section_header.settings.heading.info",
+          "label": "t:heading.label"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "large",
+              "label": "t:heading.settings.heading_size.option_large"
+            },
+            {
+              "value": "medium",
+              "label": "t:heading.settings.heading_size.option_medium"
+            },
+            {
+              "value": "small",
+              "label": "t:heading.settings.heading_size.option_small"
+            }
+          ],
+          "default": "small",
+          "label": "t:heading.settings.heading_size.label"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "t:text.label"
+        },
+        {
+          "type": "select",
+          "id": "text_size",
+          "options": [
+            {
+              "value": "large",
+              "label": "t:text.settings.text_size.option_large"
+            },
+            {
+              "value": "medium",
+              "label": "t:text.settings.text_size.option_medium"
+            },
+            {
+              "value": "small",
+              "label": "t:text.settings.text_size.option_small"
+            },
+            {
+              "value": "xsmall",
+              "label": "t:text.settings.text_size.option_xsmall"
+            }
+          ],
+          "default": "medium",
+          "label": "t:text.settings.text_size.label"
+        }
+      ]
+    },
+    {
+      "type": "collapsible_tab",
+      "name": "t:question_answer.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Question",
+          "label": "t:question_answer.blocks.question_answer.settings.question.label"
+        },
+        {
+          "type": "richtext",
+          "default": "<p>Add an answer here.</p>",
+          "id": "content",
+          "label": "t:question_answer.blocks.question_answer.settings.answer.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:question_answer.name",
+      "blocks": [
+        {
+          "type": "section_header"
+        },
+        {
+          "type": "collapsible_tab"
+        },
+        {
+          "type": "collapsible_tab"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

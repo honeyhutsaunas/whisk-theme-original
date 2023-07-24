@@ -1,0 +1,18 @@
+{%- liquid
+  if settings.cart_icon == "icon_cart"
+    assign cart_title = 'cart.title_cart' | t
+  elsif settings.cart_icon == "icon_bag"
+    assign cart_title = 'cart.title_bag' | t
+  else
+    assign cart_title = 'cart.title_basket' | t
+  endif
+-%}
+
+<div class="container--page space--mt--xlarge">
+  <h1 class="type--heading title--medium align--text-center space--mb--medium">
+    {{ cart_title }}
+  </h1>
+  <div class="container--copy-max-width align--block-center element--border-top--thick">
+    {%- render 'cart-items' -%}
+  </div>
+</div>

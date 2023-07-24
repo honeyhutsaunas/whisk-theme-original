@@ -1,0 +1,104 @@
+{% comment %}
+  Renders social icons with links to social profiles.
+
+  Accepts:
+  alignment: {String} Alignment of icons (defaults to left)
+  class: {String} Custom CSS class for the component
+
+  Usage:
+  {%- render 'social-list', alignment: block.settings.alignment, class: 'space--mt--medium' -%}
+{% endcomment %}
+{%- assign social_icon_size = '26px' -%}
+
+<ul class="social-list flex--justify-{{ alignment }} list--unstyled {{ class }}">
+  {%- if settings.social_twitter_link != blank -%}
+    <li>
+      <a class="button--icon" href="{{ settings.social_twitter_link }}" aria-describedby="a11y-external-message">
+        {%- render 'icons', icon: 'twitter', size: social_icon_size -%}
+        <span class="display--hidden">
+          {{ 'social.links.twitter' | t }}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_facebook_link != blank -%}
+    <li>
+      <a class="button--icon" href="{{ settings.social_facebook_link }}" target="_blank" rel="noopener" aria-describedby="a11y-external-message">
+        {%- render 'icons', icon: 'facebook', size: social_icon_size -%}
+        <span class="display--hidden">
+          {{ 'social.links.facebook' | t }}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_pinterest_link != blank -%}
+    <li>
+      <a class="button--icon" href="{{ settings.social_pinterest_link }}" target="_blank" rel="noopener" aria-describedby="a11y-external-message">
+        {%- render 'icons', icon: 'pinterest', size: social_icon_size -%}
+        <span class="display--hidden">
+          {{ 'social.links.pinterest' | t }}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_instagram_link != blank -%}
+    <li>
+      <a class="button--icon" href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener" aria-describedby="a11y-external-message">
+        {%- render 'icons', icon: 'instagram', size: social_icon_size -%}
+        <span class="display--hidden">
+          {{ 'social.links.instagram' | t }}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_tiktok_link != blank -%}
+    <li>
+      <a class="button--icon" href="{{ settings.social_tiktok_link }}" target="_blank" rel="noopener" aria-describedby="a11y-external-message">
+        {%- render 'icons', icon: 'tiktok', size: social_icon_size -%}
+        <span class="display--hidden">
+          {{ 'social.links.tiktok' | t }}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_snapchat_link != blank -%}
+    <li>
+      <a class="button--icon" href="{{ settings.social_snapchat_link }}" target="_blank" rel="noopener" aria-describedby="a11y-external-message">
+        {%- render 'icons', icon: 'snapchat', size: social_icon_size -%}
+        <span class="display--hidden">
+          {{ 'social.links.snapchat' | t }}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_tumblr_link != blank -%}
+    <li>
+      <a class="button--icon" href="{{ settings.social_tumblr_link }}" target="_blank" rel="noopener" aria-describedby="a11y-external-message">
+        {%- render 'icons', icon: 'tumblr', size: social_icon_size -%}
+        <span class="display--hidden">
+          {{ 'social.links.tumblr' | t }}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_youtube_link != blank -%}
+    <li>
+      <a class="button--icon" href="{{ settings.social_youtube_link }}" target="_blank" rel="noopener" aria-describedby="a11y-external-message">
+        {%- render 'icons', icon: 'youtube', size: social_icon_size -%}
+        <span class="display--hidden">
+          {{ 'social.links.youtube' | t }}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_vimeo_link != blank -%}
+    <li>
+      <a class="button--icon" href="{{ settings.social_vimeo_link }}" target="_blank" rel="noopener" aria-describedby="a11y-external-message">
+        {%- render 'icons', icon: 'vimeo', size: social_icon_size -%}
+        <span class="display--hidden">
+          {{ 'social.links.vimeo' | t }}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+</ul>

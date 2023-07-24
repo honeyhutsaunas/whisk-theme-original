@@ -1,0 +1,7 @@
+.logo-list {
+  align-items: center;
+  display: flex;
+  gap: var(--space-grid-gap) var(--space-xlarge);
+  flex-wrap: wrap;
+  justify-content: center;
+}

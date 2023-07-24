@@ -1,0 +1,51 @@
+{% comment %}
+    Renders an animated loading icon
+
+    Accepts:
+    - location: {String} A unique name to scope these selections to.
+    - size: {String} Defaults to '6rem' if no size is declared.
+    - on_foreground: {Boolean} Will make the loader colors the background color to stand out against foreground. Primary use is for buttons. Default: false.
+
+    Usage:
+    {%- render 'loader',
+      location: 'collection-grid',
+      size: '200px',
+      on_foreground: true
+    -%}
+{% endcomment %}
+
+{%- liquid
+  if size
+    assign loader_size = size
+  else
+    assign loader_size = '6rem'
+  endif
+-%}
+
+{% style %}
+  .loader--{{ location }} {
+    width: {{ loader_size }};
+    height: {{ loader_size }};
+  }
+
+  {%- if on_foreground -%}
+    .loader--{{ location }} .loader__circle-1,
+    .loader--{{ location }} .loader__circle-2 {
+      border-color: var(--color-background);
+    }
+
+    .loader--{{ location }} .loader__reduced-motion-message {
+      color: var(--color-background);
+    }
+  {%- endif -%}
+{% endstyle %}
+
+<div class="loader loader--{{ location }}">
+  <span class="loader__reduced-motion-message copy--small copy--italic">
+    {{ 'accessibility.loading' | t }}
+  </span>
+  <div class="loader__inner-container">
+    <div class="loader__circle-1"></div>
+    <div class="loader__circle-2"></div>
+  </div>
+</div>

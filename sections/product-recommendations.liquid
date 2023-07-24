@@ -1,0 +1,114 @@
+{%- liquid
+  if section.settings.products_to_show == 4
+    assign image_sizes = '(min-width: 900px) 30vw, 50vw'
+  elsif section.settings.products_to_show == 3
+    assign image_sizes = '(min-width: 900px) 40vw, 50vw'
+  else
+    assign image_sizes = '50vw'
+  endif
+-%}
+
+<product-recommendations class="product-recommendations display--block {% if section.settings.spacing_top %}space--pt--xlarge{% endif %} {% if section.settings.spacing_bottom %}space--pb--xlarge{% endif %}" data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.products_to_show }}">
+  {% if recommendations.performed and recommendations.products_count > 0 %}
+    <h2 class="type--heading title--{{ section.settings.heading_size }} space--mb--large container--page align--text-center">
+      {{ section.settings.heading | escape }}
+    </h2>
+    <ul class="grid--{{ section.settings.products_to_show }}-columns grid--2-columns--medium-down list--unstyled container--page">
+      {% for recommendation in recommendations.products %}
+        <li>
+          {% render 'product-card',
+            center_text: settings.product_card_center_text,
+            enable_quick_add: settings.product_quick_add_enabled,
+            image_sizes: image_sizes,
+            location: 'product-recommendations',
+            product_card_product: recommendation,
+            section_id: section.id,
+            show_price: true,
+            show_product_subtitle: section.settings.show_product_subtitle,
+            show_swatches: true,
+            show_vendor: section.settings.show_vendor
+          %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</product-recommendations>
+
+<script src="{{ 'product-recommendations.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "t:related_recommendations.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:related_recommendations.settings.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_top",
+      "default": true,
+      "label": "t:spacing_top.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_bottom",
+      "default": true,
+      "label": "t:spacing_bottom.label"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "You may also like",
+      "label": "t:heading.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "large",
+          "label": "t:heading.settings.heading_size.option_large"
+        },
+        {
+          "value": "medium",
+          "label": "t:heading.settings.heading_size.option_medium"
+        },
+        {
+          "value": "small",
+          "label": "t:heading.settings.heading_size.option_small"
+        }
+      ],
+      "default": "medium",
+      "label": "t:heading.settings.heading_size.label"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4,
+      "label": "t:related_recommendations.settings.products_to_show.label"
+    },
+    {
+      "type": "header",
+      "content": "t:product_card.name"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "t:product_card.settings.show_vendor.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_subtitle",
+      "default": false,
+      "label": "t:product_card.settings.show_subtitle.label",
+      "info": "t:product_card.settings.show_subtitle.info"
+    }
+  ]
+}
+{% endschema %}

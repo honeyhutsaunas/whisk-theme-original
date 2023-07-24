@@ -1,0 +1,618 @@
+{%- liquid
+  if section.settings.edge_style contains "top"
+    assign padding_classes = 'space--pt--small space--pb--xlarge'
+  elsif section.settings.edge_style contains "bottom"
+    assign padding_classes = 'space--pt--xlarge space--pb--medium'
+  else
+    assign padding_classes = 'space--pv--xlarge'
+  endif
+-%}
+
+<div class="color--underneath-{{ section.settings.background_color_scheme }} {% if section.settings.spacing_top %}space--mt--xlarge{% endif %} {% if section.settings.spacing_bottom %}space--mb--xlarge{% endif %}">
+  {%- if section.settings.edge_style contains "top" -%}
+    <div class="element--edge-wrapper">
+      <div class="element--{{ section.settings.edge_style }} color--bg-{{ section.settings.color_scheme }}"></div>
+    </div>
+  {%- endif -%}
+  <div class="color--bg-{{ section.settings.color_scheme }} {{ padding_classes }}">
+    <div class="icon-list icon-list--{{ section.settings.blocks_per_row }}-items icon-list--align-{{ section.settings.block_alignment }} container--page">
+      {%- if section.settings.heading -%}
+        <h2 class="type--heading title--{{ section.settings.heading_size }} align--text-center">
+          {{ section.settings.heading | escape }}
+        </h2>
+      {%- endif -%}
+      {%- unless section.settings.text == blank -%}
+        <div class="container--copy-max-width rte copy--{{ section.settings.text_size }} space--mt--small align--text-center align--block-center">
+          {{ section.settings.text }}
+        </div>
+      {%- endunless -%}
+
+      <ul class="icon-list__list {% unless section.settings.heading == blank and section.settings.text == blank %}space--mt--large{% endunless %} list--unstyled">
+        {%- for block in section.blocks -%}
+          <li class="icon-list__item" {{ block.shopify_attributes }}>
+            {%- if block.type == 'icon_block' -%}
+              {%- unless block.settings.icon == 'none' -%}
+                {%- assign icon_class = 'flex--none icon-list__icon-size--' | append: section.settings.icon_size -%}
+                {%- render 'icons', icon: block.settings.icon, class: 'space--mb--space', class: icon_class -%}
+              {%- endunless -%}
+              <div>
+                {%- if block.settings.heading -%}
+                  <h3 class="type--heading title--{{ section.settings.heading_size }} space--mb--xsmall">
+                    {{ block.settings.heading }}
+                  </h3>
+                {%- endif -%}
+                {%- if block.settings.text -%}
+                  <p class="copy--{{ section.settings.text_size }}">
+                    {{ block.settings.text }}
+                  </p>
+                {%- endif -%}
+              {%- endif -%}
+              {%- if block.settings.link_url -%}
+                <a href="{{ block.settings.link_url }}" class="link--with-arrow space--mt--small display--block motion-reduce copy--bold">
+                  {{ block.settings.link_text | escape }}
+                  {%- render 'icons', icon: 'arrow', size: '1em', class: 'link__arrow' -%}
+                </a>
+              {%- endif -%}
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+  {%- if section.settings.edge_style contains 'bottom' -%}
+    <div class="element--edge-wrapper">
+      <div class="element--{{ section.settings.edge_style }} color--bg-{{ section.settings.color_scheme }}"></div>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:icon_list.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "spacing_top",
+      "default": false,
+      "label": "t:spacing_top.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "spacing_bottom",
+      "default": false,
+      "label": "t:spacing_bottom.label"
+    },
+    {
+      "type": "range",
+      "id": "blocks_per_row",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 3,
+      "label": "t:icon_list.settings.blocks_per_row.label"
+    },
+    {
+      "type": "select",
+      "id": "block_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:icon_list.settings.block_alignment.option_left"
+        },
+        {
+          "value": "center",
+          "label": "t:icon_list.settings.block_alignment.option_center"
+        }
+      ],
+      "default": "center",
+      "label": "t:icon_list.settings.block_alignment.label"
+    },
+    {
+      "type": "select",
+      "id": "icon_size",
+      "options": [
+        {
+          "value": "large",
+          "label": "t:icon_list.settings.icon_size.option_large"
+        },
+        {
+          "value": "medium",
+          "label": "t:icon_list.settings.icon_size.option_medium"
+        },
+        {
+          "value": "small",
+          "label": "t:icon_list.settings.icon_size.option_small"
+        }
+      ],
+      "default": "medium",
+      "label": "t:icon_list.settings.icon_size.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "large",
+          "label": "t:heading.settings.heading_size.option_large"
+        },
+        {
+          "value": "medium",
+          "label": "t:heading.settings.heading_size.option_medium"
+        },
+        {
+          "value": "small",
+          "label": "t:heading.settings.heading_size.option_small"
+        }
+      ],
+      "default": "large",
+      "label": "t:heading.settings.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "options": [
+        {
+          "value": "large",
+          "label": "t:text.settings.text_size.option_large"
+        },
+        {
+          "value": "medium",
+          "label": "t:text.settings.text_size.option_medium"
+        },
+        {
+          "value": "small",
+          "label": "t:text.settings.text_size.option_small"
+        }
+      ],
+      "default": "medium",
+      "label": "t:text.settings.text_size.label"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:color_scheme.option_default"
+        },
+        {
+          "value": "inverse",
+          "label": "t:color_scheme.option_inverse"
+        },
+        {
+          "value": "primary",
+          "label": "t:color_scheme.option_accent_1"
+        },
+        {
+          "value": "secondary",
+          "label": "t:color_scheme.option_accent_2"
+        },
+        {
+          "value": "tertiary",
+          "label": "t:color_scheme.option_accent_3"
+        },
+        {
+          "value": "quaternary",
+          "label": "t:color_scheme.option_accent_4"
+        },
+        {
+          "value": "quinary",
+          "label": "t:color_scheme.option_accent_5"
+        },
+        {
+          "value": "senary",
+          "label": "t:color_scheme.option_accent_6"
+        }
+      ],
+      "default": "default",
+      "label": "t:color_scheme.label"
+    },
+    {
+      "type": "header",
+      "content": "t:borders.name"
+    },
+    {
+      "type": "select",
+      "id": "edge_style",
+      "options": [
+        {
+          "value": "edge-solid-angle-top-up",
+          "label": "t:borders.settings.border_style.option_angled_up_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-angle-top-down",
+          "label": "t:borders.settings.border_style.option_angled_down_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-waves-angle-top-up",
+          "label": "t:borders.settings.border_style.option_waves_angled_up_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-waves-angle-top-down",
+          "label": "t:borders.settings.border_style.option_waves_angled_down_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-even-waves-top-1",
+          "label": "t:borders.settings.border_style.option_even_waves_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-even-waves-top-1-reverse",
+          "label": "t:borders.settings.border_style.option_even_waves_reverse_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-uneven-waves-top-1",
+          "label": "t:borders.settings.border_style.option_uneven_waves_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-uneven-waves-top-1-reverse",
+          "label": "t:borders.settings.border_style.option_uneven_waves_reverse_top",
+          "group": "t:borders.settings.border_style.group_top"
+        },
+        {
+          "value": "edge-solid-angle-bottom-up",
+          "label": "t:borders.settings.border_style.option_angled_up_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-angle-bottom-down",
+          "label": "t:borders.settings.border_style.option_angled_down_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-waves-angle-bottom-up",
+          "label": "t:borders.settings.border_style.option_waves_angled_up_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-waves-angle-bottom-down",
+          "label": "t:borders.settings.border_style.option_waves_angled_down_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-even-waves-bottom-1",
+          "label": "t:borders.settings.border_style.option_even_waves_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-even-waves-bottom-1-reverse",
+          "label": "t:borders.settings.border_style.option_even_waves_reverse_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-uneven-waves-bottom-1",
+          "label": "t:borders.settings.border_style.option_uneven_waves_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-uneven-waves-bottom-1-reverse",
+          "label": "t:borders.settings.border_style.option_uneven_waves_reverse_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-center-point-bottom",
+          "label": "t:borders.settings.border_style.option_center_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "edge-solid-center-pinch-bottom",
+          "label": "t:borders.settings.border_style.option_pinch_bottom",
+          "group": "t:borders.settings.border_style.group_bottom"
+        },
+        {
+          "value": "none",
+          "label": "t:borders.settings.border_style.option_none"
+        }
+      ],
+      "default": "none",
+      "label": "t:borders.settings.border_style.label"
+    },
+    {
+      "type": "select",
+      "id": "background_color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:color_scheme.option_default"
+        },
+        {
+          "value": "inverse",
+          "label": "t:color_scheme.option_inverse"
+        },
+        {
+          "value": "primary",
+          "label": "t:color_scheme.option_accent_1"
+        },
+        {
+          "value": "secondary",
+          "label": "t:color_scheme.option_accent_2"
+        },
+        {
+          "value": "tertiary",
+          "label": "t:color_scheme.option_accent_3"
+        },
+        {
+          "value": "quaternary",
+          "label": "t:color_scheme.option_accent_4"
+        },
+        {
+          "value": "quinary",
+          "label": "t:color_scheme.option_accent_5"
+        },
+        {
+          "value": "senary",
+          "label": "t:color_scheme.option_accent_6"
+        },
+        {
+          "value": "site-header-bg",
+          "label": "t:color_scheme.option_header_bg"
+        },
+        {
+          "value": "site-footer-bg",
+          "label": "t:color_scheme.option_footer_bg"
+        }
+      ],
+      "default": "default",
+      "label": "t:borders.settings.background_color_scheme.label",
+      "info": "t:borders.settings.background_color_scheme.info"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "icon_block",
+      "name": "Icon Block",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "options": [
+            {
+              "value": "none",
+              "label": "t:icon.option_none"
+            },
+            {
+              "value": "award",
+              "label": "t:icon.option_award"
+            },
+            {
+              "value": "bed",
+              "label": "t:icon.option_bed"
+            },
+            {
+              "value": "building",
+              "label": "t:icon.option_building"
+            },
+            {
+              "value": "bulb",
+              "label": "t:icon.option_bulb"
+            },
+            {
+              "value": "cake",
+              "label": "t:icon.option_cake"
+            },
+            {
+              "value": "calendar",
+              "label": "t:icon.option_calendar"
+            },
+            {
+              "value": "chat_bubble",
+              "label": "t:icon.option_chat_bubble"
+            },
+            {
+              "value": "clipboard",
+              "label": "t:icon.option_clipboard"
+            },
+            {
+              "value": "clock",
+              "label": "t:icon.option_clock"
+            },
+            {
+              "value": "cocktail",
+              "label": "t:icon.option_cocktail"
+            },
+            {
+              "value": "computer",
+              "label": "t:icon.option_computer"
+            },
+            {
+              "value": "crown",
+              "label": "t:icon.option_crown"
+            },
+            {
+              "value": "cup",
+              "label": "t:icon.option_cup"
+            },
+            {
+              "value": "customer_service",
+              "label": "t:icon.option_customer_service"
+            },
+            {
+              "value": "fire",
+              "label": "t:icon.option_fire"
+            },
+            {
+              "value": "gift",
+              "label": "t:icon.option_gift"
+            },
+            {
+              "value": "globe",
+              "label": "t:icon.option_globe"
+            },
+            {
+              "value": "hand_heart",
+              "label": "t:icon.option_hand_heart"
+            },
+            {
+              "value": "heart",
+              "label": "t:icon.option_heart"
+            },
+            {
+              "value": "home",
+              "label": "t:icon.option_home"
+            },
+            {
+              "value": "ingredients",
+              "label": "t:icon.option_ingredients"
+            },
+            {
+              "value": "leaf",
+              "label": "t:icon.option_leaf"
+            },
+            {
+              "value": "lock",
+              "label": "t:icon.option_lock"
+            },
+            {
+              "value": "mail",
+              "label": "t:icon.option_mail"
+            },
+            {
+              "value": "mail_send",
+              "label": "t:icon.option_mail_send"
+            },
+            {
+              "value": "map_pin",
+              "label": "t:icon.option_map_pin"
+            },
+            {
+              "value": "moon",
+              "label": "t:icon.option_moon"
+            },
+            {
+              "value": "music",
+              "label": "t:icon.option_music"
+            },
+            {
+              "value": "phone",
+              "label": "t:icon.option_phone"
+            },
+            {
+              "value": "plane",
+              "label": "t:icon.option_plane"
+            },
+            {
+              "value": "plant",
+              "label": "t:icon.option_plant"
+            },
+            {
+              "value": "price_tag",
+              "label": "t:icon.option_price_tag"
+            },
+            {
+              "value": "question_mark",
+              "label": "t:icon.option_question_mark"
+            },
+            {
+              "value": "recycle",
+              "label": "t:icon.option_recycle"
+            },
+            {
+              "value": "restaurant",
+              "label": "t:icon.option_restaurant"
+            },
+            {
+              "value": "return",
+              "label": "t:icon.option_return"
+            },
+            {
+              "value": "rocket",
+              "label": "t:icon.option_rocket"
+            },
+            {
+              "value": "ruler",
+              "label": "t:icon.option_ruler"
+            },
+            {
+              "value": "seedling",
+              "label": "t:icon.option_seedling"
+            },
+            {
+              "value": "shirt",
+              "label": "t:icon.option_shirt"
+            },
+            {
+              "value": "smiley_face",
+              "label": "t:icon.option_smiley_face"
+            },
+            {
+              "value": "star_smile",
+              "label": "t:icon.option_star_smile"
+            },
+            {
+              "value": "store",
+              "label": "t:icon.option_store"
+            },
+            {
+              "value": "suitcase",
+              "label": "t:icon.option_suitcase"
+            },
+            {
+              "value": "sun",
+              "label": "t:icon.option_sun"
+            },
+            {
+              "value": "takeaway",
+              "label": "t:icon.option_takeaway"
+            },
+            {
+              "value": "ticket",
+              "label": "t:icon.option_ticket"
+            },
+            {
+              "value": "truck",
+              "label": "t:icon.option_truck"
+            }
+          ],
+          "default": "heart",
+          "label": "t:icon.label"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Icon title",
+          "label": "t:icon_list.settings.icon_title.label"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Add a short tagline or description.",
+          "label": "t:icon_list.settings.icon_text.label"
+        },
+        {
+          "type": "text",
+          "id": "link_text",
+          "label": "t:icon_list.settings.link_text.label"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "t:icon_list.settings.link_url.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:icon_list.name",
+      "blocks": [
+        {
+          "type": "icon_block"
+        },
+        {
+          "type": "icon_block"
+        },
+        {
+          "type": "icon_block"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
